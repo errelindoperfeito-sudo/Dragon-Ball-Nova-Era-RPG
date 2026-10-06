@@ -5,10 +5,10 @@ import { load, save } from './storage.js';
 
 const defaults = () => ({name:'', race:'humano', mutant:false, level:1, xp:0,
   base:Object.fromEntries(ATTRS.map(a => [a, 0])), hp:null, ki:null, form:null, techs:[],
-  avatar:null, abilities:[], items:[], notes:'', tab:'ficha'});
+  absorbed:Object.fromEntries(ATTRS.map(a => [a, 0])), avatar:null, abilities:[], items:[], notes:'', tab:'ficha'});
 
 const d = defaults(), saved = load() || {};
-export const state = {...d, ...saved, base:{...d.base, ...(saved.base || {})}};
+export const state = {...d, ...saved, base:{...d.base, ...(saved.base || {})}, absorbed:{...d.absorbed, ...(saved.absorbed || {})}};
 ATTRS.forEach(a => state.base[a] = Math.max(0, Number(state.base[a]) || 0));
 if (!RACES[state.race]) state.race = 'humano';
 

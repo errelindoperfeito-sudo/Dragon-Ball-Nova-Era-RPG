@@ -12,8 +12,8 @@ const SAIYAJIN = [
   T('assj', 'Ascended Super Saiyan (SSJ Grade 2)', 65, A(70, [...X, 'vel'])),
   T('ssj2', 'Super Saiyan 2', 100, A(100, X)),
   T('ssj3', 'Super Saiyan 3', 150, A(150, X), {kiMax:2.5}),
-  T('ssjg', 'Super Saiyan God', 200, A(250, X)),
-  T('ssjb', 'Super Saiyan Blue', 300, A(300, X))
+  T('ssjg', 'Super Saiyan God', 200, A(250, X), {kiMax:5}),
+  T('ssjb', 'Super Saiyan Blue', 300, A(300, X), {kiMax:5})
 ];
 const MUTANTE = [
   T('m-oozaru', 'Macaco Gigante (Oozaru) — Lua Cheia', 1, A(180, ['vel'])),
@@ -36,6 +36,10 @@ const NAMEK = [
   T('orange', 'Forma Laranja', 250, A(300, X), {kiMax:5})
 ];
 
-const CATALOG = {saiyajin: SAIYAJIN, arcosian: ARCOSIAN, namekuseijin: NAMEK};
+// Absorção não é uma forma: ao ativar, abre o card para informar os atributos recebidos (ver ui.js).
+const MAJIN = [{...T('absorcao', 'Absorção', 25, {}), action:'absorb',
+  desc:'Absorve permanentemente um inimigo derrotado: recebe 20% dos atributos do alvo, suas técnicas e seu conhecimento.'}];
+
+const CATALOG = {saiyajin: SAIYAJIN, arcosian: ARCOSIAN, namekuseijin: NAMEK, majin: MAJIN};
 export const getTransforms = (race, mutant) =>
   race === 'saiyajin' && mutant ? MUTANTE : (CATALOG[race] || []);

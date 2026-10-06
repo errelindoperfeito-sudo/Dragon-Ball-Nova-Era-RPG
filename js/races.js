@@ -14,5 +14,5 @@ export const RACES = {
   androide: {name:'Androide', every:0, perLevelAll:true, gain:'+1 em TODOS os atributos por nível', bonus:{},
     passive:'Regenera 5% do Ki Max por turno e absorve Ki de inimigos/ataques. Não carrega Ki manualmente. Sem transformações.'},
   majin: {name:'Majin', every:1, gain:'1 ponto por nível', bonus:{hpMax:20, meleeRes:15},
-    passive:'Dorme para recuperar 30% de HP/Ki; só morre por desintegração de Ki. Absorção: ganha 20% dos atributos e técnicas do alvo derrotado. Sem transformações.'}
+    passive:'Dorme para recuperar 30% de HP/Ki; só morre por desintegração de Ki. Absorção (nível 25, em Transformações): ganha 20% dos atributos, técnicas e conhecimento do alvo derrotado.'}
 };

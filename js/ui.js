@@ -6,7 +6,7 @@ import { getTransforms } from './transformations.js';
 import { TECHS } from './techniques.js';
 import { need, syncUnlocks } from './level.js';
 import { wipe } from './storage.js';
-import { ATTRS, LABEL, $, $$, h, fmt, sgn, describe } from './utils.js';
+import { ATTRS, ABSORB_ATTRS, LABEL, $, $$, h, field, fmt, sgn, describe } from './utils.js';
 
 const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1b1f3d"/><path d="M50 12l8 14 8-10 2 18 10-4-6 16c4 6 4 12 0 18-4 8-14 12-22 12s-18-4-22-12c-4-6-4-12 0-18l-6-16 10 4 2-18 8 10z" fill="#ffb347"/><circle cx="50" cy="52" r="16" fill="#f2c9a0"/><path d="M20 100c4-18 18-24 30-24s26 6 30 24z" fill="#ff8a1f"/></svg>');
@@ -54,19 +54,22 @@ export function render() {
     setVal($('input', card), state.base[a]);
     const rows = [['', 'Base', fmt(L.base)]];
     if (L.race) rows.push(['r', R.perLevelAll ? 'Raça (por nível)' : 'Raça', sgn(L.race)]);
+    if (L.absorb) rows.push(['a', 'Absorção', sgn(L.absorb)]);
     if (L.form) rows.push(['f', form.name, sgn(L.form)]);
     if (L.tech) rows.push(['t', 'Técnicas', sgn(L.tech)]);
     rows.push(['sum', 'Total de pontos', fmt(t)]);
     $('.layers', card).innerHTML = rows.map(([c, l, v]) => `<li class="${c}"><span>${l}</span><b>${v}</b></li>`).join('');
-    $('.result', card).innerHTML = `[ ${fmt(t)} ] → <b>${isPool ? fmt(t * 5) : fmt(t * 0.7)}</b>${isPool ? (a === 'hpMax' ? ' HP' : ' Ki') : ''}`;
+    $('.result', card).innerHTML = `[ ${fmt(t)} ] → <b>${isPool ? fmt(a === 'hpMax' ? S.hpTotal : S.kiTotal) : fmt(t * 0.7)}</b>${isPool ? (a === 'hpMax' ? ' HP' : ' Ki') : ''}`;
     $('.reads', card).innerHTML = reads(a, S).map(([l, v]) => `<div><span>${l}</span><b>${v}</b></div>`).join('');
     card.classList.toggle('boosted', !!(L.form || L.tech));
   });
 
-  const spent = ATTRS.reduce((s, a) => s + state.base[a], 0), pool = R.every ? Math.floor(state.level / R.every) : 0;
+  // Pontos disponíveis = pontos ganhos por nível − pontos já investidos (nunca negativo). Mostra de quais níveis são.
+  const pool = R.every ? Math.floor(state.level / R.every) : 0, spent = ATTRS.reduce((s, a) => s + state.base[a], 0);
+  const avail = Math.max(0, pool - spent), first = (pool - avail + 1) * R.every, last = pool * R.every;
   $('#pointsInfo').innerHTML = R.perLevelAll
     ? `<b>${R.name}</b>: ${R.gain} (automático: +${state.level} em cada)`
-    : `Pontos de nível: <b>${pool}</b> · Investidos: <b>${spent}</b> · Livres: <b class="${pool - spent < 0 ? 'neg' : ''}">${pool - spent}</b> <small>(${R.gain})</small>`;
+    : `Pontos disponíveis: <b>${avail}</b>${avail ? ` · referentes ${first === last ? 'ao nível' : 'aos níveis'} <b>${first === last ? last : first + ' a ' + last}</b>` : ''} <small>(${R.gain})</small>`;
   $('#racePassive').textContent = R.passive;
 
   const mb = $('#btnMutant');
@@ -76,7 +79,7 @@ export function render() {
   $('#btnTechs').classList.toggle('on', !$('#techsPanel').hidden);
 
   panel('#formsPanel', state.mutant ? 'Transformações — Saiyajin Mutante' : `⚡ Transformações — ${R.name}`, getTransforms(state.race, state.mutant),
-    t => t.id === state.form, t => { state.form = state.form === t.id ? null : t.id; commit(); }, 'Esta raça não possui transformações. Use as Técnicas.');
+    t => t.id === state.form, t => { if (t.action === 'absorb') return openAbsorb(); state.form = state.form === t.id ? null : t.id; commit(); }, 'Esta raça não possui transformações. Use as Técnicas.');
   panel('#techsPanel', '🌀 Técnicas (valem para todas as raças e acumulam com a transformação)', TECHS, t => state.techs.includes(t.id), t => {
     const on = state.techs.includes(t.id);
     state.techs = state.techs.filter(id => id !== t.id && TECHS.find(x => x.id === id).group !== t.group);
@@ -92,7 +95,7 @@ function panel(selector, title, items, isOn, toggle, empty) {
   $(selector).replaceChildren(h('h3', {}, title), ...(items.length ? items.map(t => {
     const lock = t.lvl > state.level, on = isOn(t);
     return h('article', {class: 'tf' + (on ? ' on' : '') + (lock ? ' locked' : '')},
-      h('div', {}, h('b', {}, t.name), h('small', {}, `Nível ${t.lvl}` + (lock ? ' · 🔒 bloqueada' : on ? ' · ativa' : ' · disponível')), h('p', {}, describe(t))),
+      h('div', {}, h('b', {}, t.name), h('small', {}, `Nível ${t.lvl}` + (lock ? ' · 🔒 bloqueada' : on ? ' · ativa' : ' · disponível')), h('p', {}, t.desc || describe(t))),
       h('button', {disabled: lock, onclick: () => toggle(t), textContent: on ? 'Desativar' : 'Ativar'}));
   }) : [h('p', {class: 'none'}, empty)]));
 }
@@ -117,8 +120,23 @@ function pickRace(id) {
 }
 function applyRace(id, reset) {
   state.race = id; state.mutant = false; state.form = null;
-  if (reset) ATTRS.forEach(a => state.base[a] = 0);
+  if (reset) { ATTRS.forEach(a => { state.base[a] = 0; state.absorbed[a] = 0; }); }
   syncUnlocks(); dlg().close(); commit();
+}
+
+// ---------- Absorção do Majin ----------
+function openAbsorb() {
+  const inputs = Object.fromEntries(ABSORB_ATTRS.map(a => [a, h('input', {type: 'number', step: 'any', value: 0})]));
+  const apply = () => {
+    ABSORB_ATTRS.forEach(a => { state.absorbed[a] = Math.max(0, Math.round((state.absorbed[a] + (Number(inputs[a].value) || 0)) * 100) / 100); });
+    $('#absorbDlg').close(); commit();
+  };
+  $('#absorbDlgBody').replaceChildren(h('h2', {}, 'Absorção'),
+    h('p', {class: 'absorb-rules'}, 'Só vale para inimigos derrotados em combate, e o mestre decide se o alvo é absorvível. Não é possível absorver outro Majin (nem criatura que manipule o corpo livremente). A absorção é permanente: você recebe 20% dos atributos do alvo, aprende todas as técnicas dele e recebe todo o conhecimento que ele tinha.'),
+    h('p', {}, 'Informe os valores de atributo que você está recebendo (HP Max e Ki Max não são cobrados). Eles serão somados aos pontos que você já investiu. Use valor negativo para corrigir um erro.'),
+    h('div', {class: 'absorb-grid'}, ABSORB_ATTRS.map(a => field(`${LABEL[a]} (já absorvido: ${fmt(state.absorbed[a])})`, inputs[a]))),
+    h('div', {class: 'dlg-actions'}, h('button', {textContent: 'Aplicar', onclick: apply}), h('button', {textContent: 'Cancelar', onclick: () => $('#absorbDlg').close()})));
+  $('#absorbDlg').showModal();
 }
 
 // ---------- foto (comprimida para caber no localStorage) ----------

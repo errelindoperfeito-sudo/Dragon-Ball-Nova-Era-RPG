@@ -15,3 +15,6 @@
 .race-opt.on{border-color:var(--yellow);background:#ffc21a14}
 .race-opt small{color:var(--mut)}
 .dlg-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+
+.absorb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:14px 0}
+.absorb-rules{color:var(--mut);font-size:.9em;margin-bottom:10px}

@@ -1,5 +1,7 @@
 // utils.js — constantes e funções auxiliares (sem dependências de outros módulos).
 export const ATTRS = ['hpMax','kiMax','meleeDmg','meleeRes','kiDmg','kiRes','vel'];
+export const BASE_BAR = 50; // barra base de HP e de Ki de toda raça (não são pontos); os pontos de HP/Ki Max somam por cima (pontos × 5)
+export const ABSORB_ATTRS = ['meleeDmg','kiDmg','meleeRes','kiRes','vel']; // atributos cobrados na Absorção do Majin
 export const LABEL = {hpMax:'HP Max',kiMax:'Ki Max',meleeDmg:'Melee Damage',meleeRes:'Melee Resistance',kiDmg:'Ki Damage',kiRes:'Ki Resistance',vel:'Velocity'};
 export const $ = (s, r = document) => r.querySelector(s);
 export const $$ = (s, r = document) => [...r.querySelectorAll(s)];

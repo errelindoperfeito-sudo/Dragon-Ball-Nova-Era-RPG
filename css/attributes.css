@@ -17,3 +17,5 @@
 .reads div{display:flex;justify-content:space-between;gap:8px}
 .reads span{color:var(--mut)}
 .reads b{color:var(--green)}
+
+.layers li.a b{color:#c58bff}
