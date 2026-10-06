@@ -1,0 +1,3 @@
+/* Aba Anotações */
+.notes{min-height:60vh;resize:vertical;padding:16px;line-height:1.5;background:var(--card)}
+#notesStatus{color:var(--mut)}

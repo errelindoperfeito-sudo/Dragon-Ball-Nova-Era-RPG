@@ -1,0 +1,4 @@
+/* Barra de XP */
+.xp .fill{background:linear-gradient(90deg,#2f9a2a,#9cf06a)}
+.xp-quick{flex-direction:row}
+.xp-quick button{flex:1;padding:2px 0;font-size:.85em}

@@ -1,0 +1,6 @@
+/* Logo "Dragon Ball Z: Nova Era" */
+.brand{display:flex;align-items:center;justify-content:center;gap:clamp(10px,3vw,22px);padding:14px 16px 10px;background:#000;border-bottom:2px solid var(--line)}
+.logo{margin:0;text-align:center;font:800 clamp(1.4rem,5vw,2.8rem)/1.05 var(--title);text-transform:uppercase;letter-spacing:.02em;color:var(--yellow);-webkit-text-stroke:6px #000;paint-order:stroke fill;text-shadow:3px 3px 0 #8a2a0a}
+.logo em{font-style:normal;color:var(--orange)}
+.orb{position:relative;flex-shrink:0;width:clamp(30px,6vw,52px);aspect-ratio:1;border-radius:50%;border:3px solid #000;background:radial-gradient(circle at 35% 30%,#fff3a0,#ffb300 40%,#e8651a 100%);box-shadow:0 0 14px #ff8a00aa}
+.orb::after{content:'';position:absolute;inset:24%;background:#c4180a;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}

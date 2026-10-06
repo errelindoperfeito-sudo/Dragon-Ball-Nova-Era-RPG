@@ -1,0 +1,13 @@
+/* Responsivo: coluna única no mobile */
+@media (max-width:1000px){
+  .topbar{position:static;grid-template-columns:1fr}
+  .bars{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .app{padding:12px 10px 40px}
+  .tabs{grid-template-columns:repeat(2,1fr)}
+  .list,.attr-grid,.panel{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+  .avatar{width:76px;height:76px}
+  .actions button{flex:1 1 45%}
+}

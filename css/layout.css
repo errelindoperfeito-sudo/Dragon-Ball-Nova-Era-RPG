@@ -1,0 +1,14 @@
+/* Layout geral: container, abas e barra de ações */
+.app{width:min(1200px,100%);margin:0 auto;padding:var(--gap) 16px 48px;display:flex;flex-direction:column;gap:var(--gap)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tabs button{padding:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.tabs button.on{background:linear-gradient(180deg,var(--yellow),var(--orange));color:#1a0c00;border-color:#000;box-shadow:0 3px 0 #8a2a0a}
+.tab{display:flex;flex-direction:column;gap:var(--gap)}
+.tab[hidden]{display:none}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.actions button.on{background:linear-gradient(180deg,var(--yellow),var(--orange));color:#1a0c00;border-color:#000;box-shadow:0 3px 0 #8a2a0a}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--gap);align-items:start}
+.info{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px}
+.points b{color:var(--yellow)}
+.passive{color:var(--mut);flex:1 1 320px}

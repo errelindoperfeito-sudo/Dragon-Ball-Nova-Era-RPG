@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dragon Ball Z: Nova Era — Ficha</title>
+<link rel="shortcut icon" href="https://png.pngtree.com/png-vector/20230303/ourmid/pngtree-dragon-ball-z-vector-super-illustration-png-image_6627050.png" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  * {
+        /* Chrome, Safari, Edge e Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+  }
+</style>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/header.css">
+<link rel="stylesheet" href="css/brand.css">
+<link rel="stylesheet" href="css/attributes.css">
+<link rel="stylesheet" href="css/bars.css">
+<link rel="stylesheet" href="css/xp.css">
+<link rel="stylesheet" href="css/transformations.css">
+<link rel="stylesheet" href="css/abilities.css">
+<link rel="stylesheet" href="css/items.css">
+<link rel="stylesheet" href="css/notes.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div class="brand">
+  <span class="orb" aria-hidden="true"></span>
+  <h1 class="logo">Dragon Ball Z: <em>Nova Era</em></h1>
+  <span class="orb" aria-hidden="true"></span>
+</div>
+
+<header class="topbar">
+  <div class="hero">
+    <div class="avatar-box">
+      <button class="avatar" id="avatarBtn" title="Trocar foto"><img id="avatarImg" alt="Avatar"></button>
+      <input type="file" id="avatarFile" accept="image/png,image/jpeg,image/webp" hidden>
+      <button class="mini" id="avatarRemove">Remover foto</button>
+    </div>
+    <div class="identity">
+      <input id="nameInput" placeholder="Nome do personagem" maxlength="40">
+      <div class="meta">
+        <button id="raceBtn" class="race-btn"></button>
+        <div class="level">NÍVEL <b id="levelNum">1</b></div>
+      </div>
+      <div id="badges" class="badges"></div>
+    </div>
+  </div>
+  <div class="bars">
+    <section class="bar hp" data-bar="hp">
+      <div class="bar-head"><span class="lbl">HP</span><button class="val" title="Clique para editar"></button></div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="quick"><div class="neg"></div><div class="pos"></div></div>
+    </section>
+    <section class="bar ki" data-bar="ki">
+      <div class="bar-head"><span class="lbl">KI</span><button class="val" title="Clique para editar"></button></div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="quick"><div class="neg"></div><div class="pos"></div></div>
+    </section>
+    <section class="bar xp" id="xpBar">
+      <div class="bar-head"><span class="lbl">XP</span><button class="val" title="Clique para editar"></button></div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="quick xp-quick"><button id="xpMinus">− 10 XP</button><button id="xpPlus">+ 10 XP</button></div>
+    </section>
+  </div>
+</header>
+
+<main class="app">
+  <nav class="tabs" id="tabs">
+    <button data-tab="ficha">Ficha</button>
+    <button data-tab="habilidades">Habilidades</button>
+    <button data-tab="itens">Itens</button>
+    <button data-tab="notas">Anotações</button>
+  </nav>
+
+  <section class="tab" id="tab-ficha">
+    <div class="actions">
+      <button id="btnForms">Transformações</button>
+      <button id="btnTechs">Técnicas</button>
+      <button id="btnMutant" hidden>Saiyajin Mutante</button>
+      <button id="btnReset" class="danger">Resetar ficha</button>
+    </div>
+    <div class="info card">
+      <div id="pointsInfo" class="points"></div>
+      <div id="racePassive" class="passive"></div>
+    </div>
+    <div id="formsPanel" class="panel" hidden></div>
+    <div id="techsPanel" class="panel" hidden></div>
+    <div id="attrGrid" class="attr-grid"></div>
+  </section>
+
+  <section class="tab" id="tab-habilidades" hidden>
+    <div class="toolbar"><h2>Habilidades</h2><button id="addAbility">+ Nova habilidade</button></div>
+    <p id="abilitiesEmpty" class="empty">Nenhuma habilidade registrada ainda.</p>
+    <div id="abilitiesList" class="list"></div>
+  </section>
+
+  <section class="tab" id="tab-itens" hidden>
+    <div class="toolbar"><h2>Itens</h2><button id="addItem">+ Novo item</button></div>
+    <p id="itemsEmpty" class="empty">Inventário vazio.</p>
+    <div id="itemsList" class="list"></div>
+  </section>
+
+  <section class="tab" id="tab-notas" hidden>
+    <div class="toolbar"><h2>Anotações</h2><small id="notesStatus">Salvo automaticamente</small></div>
+    <textarea id="notesArea" class="notes" placeholder="História, objetivos, NPCs, anotações de sessão..."></textarea>
+  </section>
+</main>
+
+<dialog id="raceDlg"><div id="raceDlgBody"></div></dialog>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+/* Aba Itens */
+.item{display:flex;flex-direction:column;gap:10px;border-left:4px solid var(--orange)}
+.item.used{opacity:.55;border-left-color:var(--mut)}
+.item.used input[type=text]{text-decoration:line-through}
+.item .foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.check{display:flex;align-items:center;gap:6px}
+.check input{width:auto}

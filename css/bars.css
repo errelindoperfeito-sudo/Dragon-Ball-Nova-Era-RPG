@@ -1,0 +1,19 @@
+/* Barras de HP e Ki (estrutura compartilhada com a barra de XP) */
+.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bar{display:flex;flex-direction:column;gap:5px;min-width:0}
+.bar-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lbl{font-family:var(--title);font-size:.8em;letter-spacing:.08em}
+.val{padding:2px 8px;font-weight:700;background:#0006;border-style:dashed;white-space:nowrap}
+input.inline{width:150px;padding:2px 8px;text-align:right}
+.track{height:20px;border-radius:6px;background:#000;border:2px solid #000;outline:1px solid var(--line);overflow:hidden}
+.fill{height:100%;width:0;transition:width .4s ease,background .3s}
+.hp .fill{background:linear-gradient(90deg,#b81d0a,#ff5a1f)}
+.hp.low .fill{background:var(--red);animation:pulse 1s infinite}
+.ki .fill{background:linear-gradient(90deg,#ff9d00,#ffe14d)}
+.ki.gold .fill{background:linear-gradient(90deg,#ffe14d,#fffbe0);box-shadow:0 0 14px #ffe14d}
+@keyframes pulse{50%{opacity:.55}}
+.quick{display:flex;flex-direction:column;gap:4px}
+.quick .neg,.quick .pos{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.quick button{padding:2px 0;font-size:.78em}
+.quick .neg button:hover{border-color:var(--red)}
+.quick .pos button:hover{border-color:var(--green)}

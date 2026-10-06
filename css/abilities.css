@@ -1,0 +1,5 @@
+/* Aba Habilidades */
+.ability{display:flex;flex-direction:column;gap:10px;border-left:4px solid var(--green)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card textarea{resize:vertical;min-height:70px}
+.card .del{align-self:flex-end}

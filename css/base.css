@@ -1,0 +1,20 @@
+/* Base: variáveis, reset e componentes genéricos */
+:root{--bg:#0a0806;--card:rgba(24,16,9,.9);--line:rgba(255,150,30,.25);--tx:#fff6e5;--mut:#bfae92;--yellow:#ffc21a;--orange:#ff8a00;--red:#e8401c;--green:#63d84a;--black:#000;--r:10px;--gap:14px;--font:'DM Sans',system-ui,sans-serif;--title:'Source Serif 4',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:500 16px/1.4 var(--font);color:var(--tx);min-height:100vh;background:radial-gradient(900px 520px at 50% -8%,#ff8a0040,transparent),repeating-conic-gradient(from 0deg at 50% -25%,#ff8a0012 0 5deg,transparent 5deg 10deg),var(--bg);background-attachment:fixed}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:2px solid var(--orange);background:#2a1a0c;border-radius:8px;padding:6px 14px;font-weight:700;transition:.15s}
+button:hover:not(:disabled){background:var(--orange);color:#1a0c00;border-color:var(--yellow)}
+button:disabled{opacity:.4;cursor:not-allowed}
+input,select,textarea{width:100%;background:#0009;border:2px solid var(--line);border-radius:8px;padding:8px 10px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--green)}
+h2,h3{font-family:var(--title);font-weight:800;color:var(--yellow);letter-spacing:.01em}
+.card{background:var(--card);border:2px solid var(--orange);border-radius:var(--r);padding:var(--gap);box-shadow:4px 4px 0 #8a2a0a}
+.danger{border-color:var(--red);color:#ff9a7a}
+.danger:hover:not(:disabled){background:var(--red)!important;color:#fff!important}
+.mini{padding:3px 8px;font-size:.8em}
+.field{display:flex;flex-direction:column;gap:4px;font-size:.85em;color:var(--mut)}
+.empty{color:var(--mut);text-align:center;padding:24px}
+.neg{color:var(--red)}
+dialog{margin:auto;border:3px solid var(--orange);border-radius:var(--r);background:#18100a;color:var(--tx);padding:20px;width:min(640px,94vw);box-shadow:6px 6px 0 #8a2a0a}
+dialog::backdrop{background:#000a}

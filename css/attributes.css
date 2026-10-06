@@ -1,0 +1,19 @@
+/* Cards de atributos */
+.attr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:var(--gap)}
+.attr{display:flex;flex-direction:column;gap:10px}
+.attr.boosted{border-color:var(--yellow);box-shadow:0 0 18px #ffc21a44}
+.attr h3{font-size:.95em}
+.attr-in{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--mut)}
+.attr-in input{width:110px;text-align:right;font-weight:700}
+.layers{list-style:none;display:flex;flex-direction:column;gap:2px;font-size:.9em}
+.layers li{display:flex;justify-content:space-between;color:var(--mut)}
+.layers li.r b{color:var(--orange)}
+.layers li.f b{color:var(--yellow)}
+.layers li.t b{color:var(--green)}
+.layers li.sum{border-top:1px solid var(--line);margin-top:3px;padding-top:3px;color:var(--tx)}
+.result{font-size:1.1em;padding:8px 10px;border-radius:8px;background:#000a;border-left:5px solid var(--orange)}
+.result b{font:800 1.4em var(--title);color:var(--yellow)}
+.reads{display:flex;flex-direction:column;gap:2px;font-size:.9em}
+.reads div{display:flex;justify-content:space-between;gap:8px}
+.reads span{color:var(--mut)}
+.reads b{color:var(--green)}
