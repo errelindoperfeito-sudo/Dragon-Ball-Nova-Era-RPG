@@ -5,7 +5,8 @@
 }
 @media (max-width:600px){
   .app{padding:12px 10px 40px}
-  .tabs{grid-template-columns:repeat(2,1fr)}
+  .tabs{grid-template-columns:repeat(3,1fr)}
+  .tabs button{padding:8px 4px;font-size:.78em}
   .list,.attr-grid,.panel{grid-template-columns:1fr}
   .row{grid-template-columns:1fr}
   .avatar{width:76px;height:76px}

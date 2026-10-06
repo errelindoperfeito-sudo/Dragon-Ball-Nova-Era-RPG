@@ -32,12 +32,15 @@
 <link rel="stylesheet" href="css/xp.css">
 <link rel="stylesheet" href="css/transformations.css">
 <link rel="stylesheet" href="css/abilities.css">
+<link rel="stylesheet" href="css/skills.css">
 <link rel="stylesheet" href="css/items.css">
 <link rel="stylesheet" href="css/notes.css">
+<link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 <div class="brand">
+  <button id="sheetsBtn" class="sheets-btn" aria-expanded="false" aria-controls="sidebar" title="Minhas fichas">☰ <span>Fichas</span></button>
   <span class="orb" aria-hidden="true"></span>
   <h1 class="logo">Dragon Ball Z: <em>Nova Era</em></h1>
   <span class="orb" aria-hidden="true"></span>
@@ -82,6 +85,7 @@
   <nav class="tabs" id="tabs">
     <button data-tab="ficha">Ficha</button>
     <button data-tab="habilidades">Habilidades</button>
+    <button data-tab="pericias">Perícias</button>
     <button data-tab="itens">Itens</button>
     <button data-tab="notas">Anotações</button>
   </nav>
@@ -108,6 +112,15 @@
     <div id="abilitiesList" class="list"></div>
   </section>
 
+  <section class="tab" id="tab-pericias" hidden>
+    <div class="toolbar"><h2>Perícias</h2></div>
+    <div class="info card">
+      <div id="skillPoints" class="points"></div>
+      <div class="passive">Em situações específicas (ex.: consertar uma nave), role 1d100. O valor-alvo é 50 + os pontos da perícia: tirou igual ou menor = sucesso.</div>
+    </div>
+    <div id="skillsBody"></div>
+  </section>
+
   <section class="tab" id="tab-itens" hidden>
     <div class="toolbar"><h2>Itens</h2><button id="addItem">+ Novo item</button></div>
     <p id="itemsEmpty" class="empty">Inventário vazio.</p>
@@ -120,6 +133,14 @@
   </section>
 </main>
 
+<div id="sidebarOverlay" class="sidebar-overlay" hidden></div>
+<aside id="sidebar" class="sidebar" aria-label="Fichas criadas" aria-hidden="true">
+  <div class="sidebar-head"><div><h2>Minhas fichas</h2><small id="sheetsCount"></small></div><button class="mini" id="sidebarClose" aria-label="Fechar menu">✕</button></div>
+  <button id="newSheet">+ Nova ficha</button>
+  <ul id="sheetsList" class="sheets-list"></ul>
+</aside>
+
+<dialog id="confirmDlg"><div id="confirmDlgBody"></div></dialog>
 <dialog id="absorbDlg"><div id="absorbDlgBody"></div></dialog>
 <dialog id="raceDlg"><div id="raceDlgBody"></div></dialog>
 <script type="module" src="js/main.js"></script>

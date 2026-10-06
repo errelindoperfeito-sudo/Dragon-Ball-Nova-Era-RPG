@@ -8,6 +8,7 @@ export const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export const fmt = n => Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100);
 export const sgn = n => (n >= 0 ? '+' : '') + fmt(n);
+export const newId = () => 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 export const debounce = (f, ms = 500) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), ms); }; };
 
 // Cria elementos DOM: h('div', {class:'x', onclick:fn}, filhos...)

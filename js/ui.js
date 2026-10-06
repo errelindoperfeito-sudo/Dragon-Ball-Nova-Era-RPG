@@ -5,10 +5,10 @@ import { RACES } from './races.js';
 import { getTransforms } from './transformations.js';
 import { TECHS } from './techniques.js';
 import { need, syncUnlocks } from './level.js';
-import { wipe } from './storage.js';
+import { resetActive } from './sheets.js';
 import { ATTRS, ABSORB_ATTRS, LABEL, $, $$, h, field, fmt, sgn, describe } from './utils.js';
 
-const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+export const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1b1f3d"/><path d="M50 12l8 14 8-10 2 18 10-4-6 16c4 6 4 12 0 18-4 8-14 12-22 12s-18-4-22-12c-4-6-4-12 0-18l-6-16 10 4 2-18 8 10z" fill="#ffb347"/><circle cx="50" cy="52" r="16" fill="#f2c9a0"/><path d="M20 100c4-18 18-24 30-24s26 6 30 24z" fill="#ff8a1f"/></svg>');
 const setVal = (el, v) => { if (document.activeElement !== el) el.value = v; };
 
@@ -156,6 +156,9 @@ function setAvatar(file) {
   r.readAsDataURL(file);
 }
 
+// Fecha os painéis de Transformações/Técnicas (usado ao trocar de ficha).
+export function closePanels() { $('#formsPanel').hidden = true; $('#techsPanel').hidden = true; }
+
 // ---------- eventos ----------
 export function init() {
   buildAttrs();
@@ -168,7 +171,7 @@ export function init() {
   $('#btnForms').onclick = toggle('#formsPanel', '#techsPanel');
   $('#btnTechs').onclick = toggle('#techsPanel', '#formsPanel');
   $('#btnMutant').onclick = () => { state.mutant = !state.mutant; state.form = null; commit(); };
-  $('#btnReset').onclick = () => { if (confirm('Resetar toda a ficha? Esta ação não pode ser desfeita.')) { wipe(); location.reload(); } };
+  $('#btnReset').onclick = () => { if (confirm('Resetar esta ficha? Só a ficha aberta é zerada (as outras não mudam). Esta ação não pode ser desfeita.')) resetActive(); };
   $$('#tabs button').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; persist(); render(); });
   document.addEventListener('levelup', () => { const t = $('.topbar'); t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); });
 }

@@ -1,0 +1,11 @@
+/* Aba Perícias */
+.sk-cat{display:flex;flex-direction:column;gap:10px;margin-bottom:var(--gap)}
+.sk-note{color:var(--mut);margin-top:-6px}
+.skill{display:flex;flex-direction:column;gap:8px;border-left:4px solid var(--line)}
+.skill.has{border-left-color:var(--green)}
+.sk-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sk-chip{font:800 .95em var(--title);color:var(--yellow);background:#000a;border-radius:99px;padding:2px 10px}
+.sk-desc{color:var(--mut);font-size:.9em}
+.sk-ctl{display:grid;grid-template-columns:44px 1fr 44px;gap:6px}
+.sk-ctl input{text-align:center;font-weight:700}
+.sk-calc{font-size:.9em;color:var(--mut)}.sk-calc b{color:var(--green)}
