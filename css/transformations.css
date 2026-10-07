@@ -18,3 +18,22 @@
 
 .absorb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:14px 0}
 .absorb-rules{color:var(--mut);font-size:.9em;margin-bottom:10px}
+
+/* Custom Race */
+.race-opt.custom{border-style:dashed;border-color:var(--green);background:#4ade8010}
+.race-opt.custom.on{border-color:var(--yellow)}
+#customDlg{width:min(920px,96vw);max-height:92vh;overflow:auto}
+.cust{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.cust h4{font-size:.95em;color:var(--yellow)}
+.cust-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.cust-row{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.cust-ki{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cust-quick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:var(--mut);font-size:.9em}
+.cust-quick input{width:100px}
+.tf .tf-actions{display:flex;flex-direction:column;gap:6px;flex:0 0 auto;min-width:max-content} /* não deixa a coluna de botões ser espremida por textos longos */
+.tf-actions button{white-space:nowrap}
+.tf p.note{color:var(--tx);font-style:italic}
+.tf p.cost{color:#5cc8ff}
+.panel .warn{grid-column:1/-1;color:var(--red);font-weight:700}
+#racePassive{white-space:pre-line}
+@media (max-width:600px){.cust-row,.cust-ki{grid-template-columns:1fr}}

@@ -1,7 +1,7 @@
 // sheets.js — lógica de várias fichas: criar, alternar, deletar e resetar (sem DOM).
 import { state, store, setState, persist } from './state.js';
 import { syncUnlocks } from './level.js';
-import { RACES } from './races.js';
+import { getRace } from './races.js';
 import { newId } from './utils.js';
 
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -13,7 +13,7 @@ const activated = () => { syncUnlocks(); document.dispatchEvent(new CustomEvent(
 
 export const summaries = () => store.sheets.map(s => {
   const active = s.id === store.activeId, d = active ? state : s.data;
-  return { id: s.id, active, name: (d.name || '').trim(), race: (RACES[d.race] || RACES.humano).name, level: d.level || 1, avatar: d.avatar || null };
+  return { id: s.id, active, name: (d.name || '').trim(), race: getRace(d.race, d.custom).name, level: d.level || 1, avatar: d.avatar || null };
 });
 
 export function switchTo(id) {

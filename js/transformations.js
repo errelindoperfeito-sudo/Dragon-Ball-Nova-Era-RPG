@@ -41,5 +41,9 @@ const MAJIN = [{...T('absorcao', 'Absorção', 25, {}), action:'absorb',
   desc:'Absorve permanentemente um inimigo derrotado: recebe 20% dos atributos do alvo, suas técnicas e seu conhecimento.'}];
 
 const CATALOG = {saiyajin: SAIYAJIN, arcosian: ARCOSIAN, namekuseijin: NAMEK, majin: MAJIN};
-export const getTransforms = (race, mutant) =>
-  race === 'saiyajin' && mutant ? MUTANTE : (CATALOG[race] || []);
+export const getTransforms = (race, mutant, custom) => race === 'custom' ? customForms(custom)
+  : race === 'saiyajin' && mutant ? MUTANTE : (CATALOG[race] || []);
+
+// Transformações da Custom Race: já no formato do motor ({add, mult}), com nota, gasto de Ki e ordenadas por nível.
+const customForms = c => (c?.forms || []).map((f, i) => ({id:f.id, name:(f.name || '').trim() || 'Transformação ' + (i + 1), lvl:f.lvl || 1,
+  add:f.add || {}, mult:f.mult || {}, note:(f.desc || '').trim(), kiCost:f.kiCost?.val > 0 ? f.kiCost : null, custom:true})).sort((a, b) => a.lvl - b.lvl);

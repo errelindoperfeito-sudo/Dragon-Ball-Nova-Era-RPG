@@ -1,19 +1,19 @@
 // state.js — fonte única da verdade. commit() = notifica os módulos de render e salva.
 // `state` é SEMPRE a ficha ativa (o objeto é o mesmo; ao trocar de ficha o conteúdo é substituído).
 import { ATTRS, newId, clamp } from './utils.js';
-import { RACES } from './races.js';
+import { RACES, CUSTOM_ID, defaultCustom, sanitizeCustom } from './races.js';
 import { loadStore, saveStore } from './storage.js';
 
 export const defaults = () => ({name:'', race:'humano', mutant:false, level:1, xp:0,
   base:Object.fromEntries(ATTRS.map(a => [a, 0])), hp:null, ki:null, form:null, techs:[],
-  absorbed:Object.fromEntries(ATTRS.map(a => [a, 0])), pericias:{}, avatar:null, abilities:[], items:[], notes:'', tab:'ficha'});
+  absorbed:Object.fromEntries(ATTRS.map(a => [a, 0])), pericias:{}, custom:defaultCustom(), avatar:null, abilities:[], items:[], notes:'', tab:'ficha'});
 
 // Completa campos que faltam (fichas antigas) e corrige valores inválidos.
 function normalize(saved = {}) {
-  const d = defaults(), s = {...d, ...saved, base:{...d.base, ...(saved.base || {})}, absorbed:{...d.absorbed, ...(saved.absorbed || {})}, pericias:{...(saved.pericias || {})}};
+  const d = defaults(), s = {...d, ...saved, base:{...d.base, ...(saved.base || {})}, absorbed:{...d.absorbed, ...(saved.absorbed || {})}, pericias:{...(saved.pericias || {})}, custom:sanitizeCustom(saved.custom ?? d.custom)};
   ATTRS.forEach(a => s.base[a] = Math.max(0, Number(s.base[a]) || 0));
   for (const k of Object.keys(s.pericias)) s.pericias[k] = clamp(Math.floor(Number(s.pericias[k]) || 0), 0, 40); // perícias: sempre entre 0 e 40
-  if (!RACES[s.race]) s.race = 'humano';
+  if (s.race !== CUSTOM_ID && !RACES[s.race]) s.race = 'humano';
   return s;
 }
 

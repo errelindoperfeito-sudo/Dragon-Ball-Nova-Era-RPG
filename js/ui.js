@@ -1,7 +1,8 @@
 // ui.js — renderização e eventos visuais (cabeçalho, atributos, painéis, abas, diálogo de raça).
 import { state, commit, persist } from './state.js';
 import { stats, reads, activeForm, activeTechs } from './attributes.js';
-import { RACES } from './races.js';
+import { RACES, getRace, CUSTOM_ID } from './races.js';
+import { openCustom } from './custom.js';
 import { getTransforms } from './transformations.js';
 import { TECHS } from './techniques.js';
 import { need, syncUnlocks } from './level.js';
@@ -23,7 +24,7 @@ function buildAttrs() {
 
 // ---------- render geral ----------
 export function render() {
-  const S = stats(), form = activeForm(), techs = activeTechs(), R = RACES[state.race];
+  const S = stats(), form = activeForm(), techs = activeTechs(), R = getRace(state.race, state.custom);
 
   setVal($('#nameInput'), state.name);
   $('#raceBtn').textContent = `${R.name} ▾`;
@@ -72,14 +73,16 @@ export function render() {
     : `Pontos disponíveis: <b>${avail}</b>${avail ? ` · referentes ${first === last ? 'ao nível' : 'aos níveis'} <b>${first === last ? last : first + ' a ' + last}</b>` : ''} <small>(${R.gain})</small>`;
   $('#racePassive').textContent = R.passive;
 
+  $('#btnCustom').hidden = state.race !== CUSTOM_ID;
   const mb = $('#btnMutant');
   mb.hidden = state.race !== 'saiyajin';
   mb.classList.toggle('on', state.mutant);
   $('#btnForms').classList.toggle('on', !$('#formsPanel').hidden);
   $('#btnTechs').classList.toggle('on', !$('#techsPanel').hidden);
 
-  panel('#formsPanel', state.mutant ? 'Transformações — Saiyajin Mutante' : `⚡ Transformações — ${R.name}`, getTransforms(state.race, state.mutant),
-    t => t.id === state.form, t => { if (t.action === 'absorb') return openAbsorb(); state.form = state.form === t.id ? null : t.id; commit(); }, 'Esta raça não possui transformações. Use as Técnicas.');
+  panel('#formsPanel', state.mutant ? 'Transformações — Saiyajin Mutante' : `⚡ Transformações — ${R.name}`, getTransforms(state.race, state.mutant, state.custom),
+    t => t.id === state.form, toggleForm,
+    state.race === CUSTOM_ID ? 'Nenhuma transformação criada. Use "Editar Custom Race" para criar.' : 'Esta raça não possui transformações. Use as Técnicas.', notice);
   panel('#techsPanel', '🌀 Técnicas (valem para todas as raças e acumulam com a transformação)', TECHS, t => state.techs.includes(t.id), t => {
     const on = state.techs.includes(t.id);
     state.techs = state.techs.filter(id => id !== t.id && TECHS.find(x => x.id === id).group !== t.group);
@@ -91,13 +94,40 @@ export function render() {
   $$('.tab').forEach(s => s.hidden = s.id !== 'tab-' + state.tab);
 }
 
-function panel(selector, title, items, isOn, toggle, empty) {
-  $(selector).replaceChildren(h('h3', {}, title), ...(items.length ? items.map(t => {
+// Mensagem exibida no painel de transformações (ex.: Ki insuficiente).
+let notice = '';
+const costValue = k => k.unit === '%' ? Math.round(stats().kiTotal * Math.min(100, k.val) / 100) : Math.round(k.val);
+const costText = k => `${fmt(k.val)}${k.unit === '%' ? '% da barra' : ' de Ki'} ${k.when === 'turn' ? 'por turno' : 'ao ativar'}`;
+function spend(t) { // desconta o gasto de Ki da transformação; false se não houver Ki suficiente
+  const c = costValue(t.kiCost);
+  if (state.ki < c) { notice = `Ki insuficiente para ${t.name}: precisa de ${c} e você tem ${state.ki}.`; render(); return false; }
+  state.ki -= c; return true;
+}
+function toggleForm(t) {
+  notice = '';
+  if (t.action === 'absorb') return openAbsorb();
+  if (state.form === t.id) { state.form = null; return commit(); }
+  if (t.kiCost?.when === 'activate' && !spend(t)) return;
+  state.form = t.id; commit();
+}
+const payTurn = t => { notice = ''; if (spend(t)) commit(); };
+
+function panel(selector, title, items, isOn, toggle, empty, warn) {
+  const kids = [h('h3', {}, title)];
+  if (warn) kids.push(h('p', {class: 'warn'}, warn));
+  if (!items.length) kids.push(h('p', {class: 'none'}, empty));
+  items.forEach(t => {
     const lock = t.lvl > state.level, on = isOn(t);
-    return h('article', {class: 'tf' + (on ? ' on' : '') + (lock ? ' locked' : '')},
-      h('div', {}, h('b', {}, t.name), h('small', {}, `Nível ${t.lvl}` + (lock ? ' · 🔒 bloqueada' : on ? ' · ativa' : ' · disponível')), h('p', {}, t.desc || describe(t))),
-      h('button', {disabled: lock, onclick: () => toggle(t), textContent: on ? 'Desativar' : 'Ativar'}));
-  }) : [h('p', {class: 'none'}, empty)]));
+    kids.push(h('article', {class: 'tf' + (on ? ' on' : '') + (lock ? ' locked' : '')},
+      h('div', {}, h('b', {}, t.name), h('small', {}, `Nível ${t.lvl}` + (lock ? ' · 🔒 bloqueada' : on ? ' · ativa' : ' · disponível')),
+        h('p', {}, t.desc || describe(t) || '—'),
+        t.note ? h('p', {class: 'note'}, t.note) : null,
+        t.kiCost ? h('p', {class: 'cost'}, '🔵 Gasto de Ki: ' + costText(t.kiCost)) : null),
+      h('div', {class: 'tf-actions'},
+        h('button', {disabled: lock, onclick: () => toggle(t), textContent: on ? 'Desativar' : 'Ativar'}),
+        on && t.kiCost?.when === 'turn' ? h('button', {onclick: () => payTurn(t), textContent: 'Pagar turno'}) : null)));
+  });
+  $(selector).replaceChildren(...kids);
 }
 
 // ---------- diálogo de raça ----------
@@ -105,13 +135,17 @@ const dlg = () => $('#raceDlg'), body = () => $('#raceDlgBody');
 function openRace() {
   body().replaceChildren(h('h2', {}, 'Escolha a raça'),
     h('div', {class: 'race-grid'}, Object.entries(RACES).map(([id, r]) => h('button', {class: 'race-opt' + (id === state.race ? ' on' : ''), onclick: () => pickRace(id)},
-      h('b', {}, r.name), h('small', {}, 'Bônus: ' + (describe({add: r.bonus}) || 'nenhum')), h('small', {}, r.gain)))),
+      h('b', {}, r.name), h('small', {}, 'Bônus: ' + (describe({add: r.bonus}) || 'nenhum')), h('small', {}, r.gain))),
+      h('button', {class: 'race-opt custom' + (state.race === CUSTOM_ID ? ' on' : ''), onclick: () => pickRace(CUSTOM_ID)},
+        h('b', {}, '🛠 Custom Race'),
+        h('small', {}, 'Crie a sua própria raça: passivas e bônus de atributos, mais transformações próprias (nome, nível, pontos ou multiplicadores, gasto de Ki e descrição).'),
+        h('small', {}, state.custom.name || state.custom.forms.length ? `Sua raça atual: ${getRace(CUSTOM_ID, state.custom).name} · ${state.custom.forms.length} transformação(ões)` : 'Tudo fica salvo na ficha.'))),
     h('button', {textContent: 'Fechar', onclick: () => dlg().close()}));
   if (!dlg().open) dlg().showModal();
 }
 function pickRace(id) {
-  if (id === state.race) return dlg().close();
-  body().replaceChildren(h('h2', {}, `Trocar para ${RACES[id].name}?`),
+  if (id === state.race) { dlg().close(); if (id === CUSTOM_ID) openCustom(); return; }
+  body().replaceChildren(h('h2', {}, `Trocar para ${getRace(id, state.custom).name}?`),
     h('p', {}, 'Deseja resetar os pontos investidos ou mantê-los? Bônus de raça e transformações serão atualizados.'),
     h('div', {class: 'dlg-actions'},
       h('button', {class: 'danger', textContent: 'Resetar pontos', onclick: () => applyRace(id, true)}),
@@ -121,7 +155,8 @@ function pickRace(id) {
 function applyRace(id, reset) {
   state.race = id; state.mutant = false; state.form = null;
   if (reset) { ATTRS.forEach(a => { state.base[a] = 0; state.absorbed[a] = 0; }); }
-  syncUnlocks(); dlg().close(); commit();
+  notice = ''; syncUnlocks(); dlg().close(); commit();
+  if (id === CUSTOM_ID) openCustom(); // abre o editor ao escolher a Custom Race
 }
 
 // ---------- Absorção do Majin ----------
@@ -157,7 +192,7 @@ function setAvatar(file) {
 }
 
 // Fecha os painéis de Transformações/Técnicas (usado ao trocar de ficha).
-export function closePanels() { $('#formsPanel').hidden = true; $('#techsPanel').hidden = true; }
+export function closePanels() { notice = ''; $('#formsPanel').hidden = true; $('#techsPanel').hidden = true; }
 
 // ---------- eventos ----------
 export function init() {
@@ -167,6 +202,7 @@ export function init() {
   $('#avatarFile').onchange = e => { const f = e.target.files[0]; if (f) setAvatar(f); e.target.value = ''; };
   $('#avatarRemove').onclick = () => { state.avatar = null; commit(); };
   $('#raceBtn').onclick = openRace;
+  $('#btnCustom').onclick = openCustom;
   const toggle = (id, other) => () => { $(other).hidden = true; $(id).hidden = !$(id).hidden; render(); };
   $('#btnForms').onclick = toggle('#formsPanel', '#techsPanel');
   $('#btnTechs').onclick = toggle('#techsPanel', '#formsPanel');
