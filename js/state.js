@@ -1,6 +1,6 @@
 // state.js — fonte única da verdade. commit() = notifica os módulos de render e salva.
 // `state` é SEMPRE a ficha ativa (o objeto é o mesmo; ao trocar de ficha o conteúdo é substituído).
-import { ATTRS, newId, clamp } from './utils.js';
+import { ATTRS, newId, clamp, LEVEL_MAX } from './utils.js';
 import { RACES, CUSTOM_ID, defaultCustom, sanitizeCustom } from './races.js';
 import { loadStore, saveStore } from './storage.js';
 
@@ -9,11 +9,18 @@ export const defaults = () => ({name:'', race:'humano', mutant:false, level:1, x
   absorbed:Object.fromEntries(ATTRS.map(a => [a, 0])), pericias:{}, custom:defaultCustom(), avatar:null, abilities:[], items:[], notes:'', tab:'ficha'});
 
 // Completa campos que faltam (fichas antigas) e corrige valores inválidos.
-function normalize(saved = {}) {
+export function normalize(saved = {}) {
   const d = defaults(), s = {...d, ...saved, base:{...d.base, ...(saved.base || {})}, absorbed:{...d.absorbed, ...(saved.absorbed || {})}, pericias:{...(saved.pericias || {})}, custom:sanitizeCustom(saved.custom ?? d.custom)};
   ATTRS.forEach(a => s.base[a] = Math.max(0, Number(s.base[a]) || 0));
   for (const k of Object.keys(s.pericias)) s.pericias[k] = clamp(Math.floor(Number(s.pericias[k]) || 0), 0, 40); // perícias: sempre entre 0 e 40
   if (s.race !== CUSTOM_ID && !RACES[s.race]) s.race = 'humano';
+  // Tipos e limites básicos (arquivos importados/editados à mão podem trazer qualquer coisa).
+  s.name = String(s.name ?? '').slice(0, 60); s.notes = String(s.notes ?? '');
+  s.level = clamp(Math.floor(Number(s.level) || 1), 1, LEVEL_MAX); s.xp = Math.max(0, Number(s.xp) || 0); s.mutant = !!s.mutant;
+  ['hp', 'ki'].forEach(k => { s[k] = s[k] === null || s[k] === undefined || !Number.isFinite(Number(s[k])) ? null : Math.max(0, Number(s[k])); });
+  ['techs', 'abilities', 'items'].forEach(k => { if (!Array.isArray(s[k])) s[k] = []; });
+  if (typeof s.avatar !== 'string' || !s.avatar.startsWith('data:image/') || s.avatar.length > 700000) s.avatar = null;
+  if (!['ficha', 'habilidades', 'pericias', 'itens', 'notas'].includes(s.tab)) s.tab = 'ficha';
   return s;
 }
 

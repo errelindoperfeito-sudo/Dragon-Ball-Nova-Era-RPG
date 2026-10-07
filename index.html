@@ -138,6 +138,9 @@
 <aside id="sidebar" class="sidebar" aria-label="Fichas criadas" aria-hidden="true">
   <div class="sidebar-head"><div><h2>Minhas fichas</h2><small id="sheetsCount"></small></div><button class="mini" id="sidebarClose" aria-label="Fechar menu">✕</button></div>
   <button id="newSheet">+ Nova ficha</button>
+  <div class="backup-row"><button id="exportAll" class="mini" title="Baixa todas as fichas deste navegador em um arquivo JSON">⬇ Baixar todas</button><button id="importBtn" class="mini" title="Carrega fichas de um arquivo JSON">⬆ Carregar arquivo</button></div>
+  <small class="backup-hint">Guarde o arquivo como backup. Em outro aparelho, use "Carregar arquivo" para recuperar tudo.</small>
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
   <ul id="sheetsList" class="sheets-list"></ul>
 </aside>
 
