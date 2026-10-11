@@ -30,8 +30,7 @@
     <a href="#habilidades">7. Habilidades</a>
     <a href="#itens">8. Itens</a>
     <a href="#pericias">9. Perícias</a>
-    <a href="#calculadora">10. Calculadora</a>
-    <a href="#salvamento">11. Salvamento e backup</a>
+    <a href="#salvamento">10. Salvamento e backup</a>
   </nav>
 
   <section id="comecar" class="card">
@@ -44,7 +43,7 @@
       <li><b>Controle HP e Ki</b> pelas barras: botões de porcentagem, ou clique no valor para digitar (<code>50</code> define, <code>+10</code> soma, <code>-20</code> subtrai).</li>
       <li><b>Suba de nível</b> pela barra de XP. O nível sobe sozinho quando o XP enche e libera transformações e habilidades de nível.</li>
     </ol>
-    <p>As abas: <b>Ficha</b> (atributos e transformações), <b>Habilidades</b>, <b>Perícias</b>, <b>Itens</b>, <b>Calculadora</b> e <b>Anotações</b>.</p>
+    <p>As abas: <b>Ficha</b> (atributos e transformações), <b>Habilidades</b>, <b>Perícias</b>, <b>Itens</b> e <b>Anotações</b>.</p>
   </section>
 
   <section id="dados" class="card">
@@ -55,8 +54,9 @@
     </div>
     <p><b>Exemplo:</b> valor-alvo 55. Tirou 40 ✅ · tirou 55 ✅ · tirou 56 ❌. Quanto <b>maior</b> o valor-alvo, <b>mais chance</b> de acertar.</p>
     <ul>
-      <li><b>Ataques:</b> o valor-alvo base é <b>50</b>. A cada <b>20 pontos de Velocity</b> ele sobe <b>+1</b> (abaixo de 20 pontos não soma nada). O máximo é <b>75</b>. A ficha mostra a sua chance em Velocity.</li>
-      <li><b>Perícias:</b> valor-alvo = <b>50 + pontos da perícia</b> (máximo 40 pontos, então até 90). Veja a seção de Perícias.</li>
+      <li><b>Ataques corpo a corpo:</b> o valor-alvo base é <b>50</b>. A cada <b>20 pontos de Velocity</b> ele sobe <b>+1</b> (abaixo de 20 pontos não soma nada). O máximo é <b>75</b>. A ficha mostra a sua chance em Velocity.</li>
+      <li><b>Ataques à distância e de Ki:</b> usam a perícia <b>Precisão</b>: valor-alvo = <b>50 + pontos de Precisão</b>, com máximo de <b>75</b> (a Precisão aceita até 25 pontos). Ela faz para o Ki o papel que a Velocity faz para os golpes físicos.</li>
+      <li><b>Outras perícias:</b> valor-alvo = <b>50 + pontos da perícia</b> (máximo 40 pontos, então até 90). Veja a seção de Perícias.</li>
       <li><b>Barrage de Ki Blasts:</b> rola-se <b>5d2</b> (<b>10d2</b> para Arcosian). Cada dado que tirar <b>2</b> é um disparo que acerta.</li>
       <li><b>Zenkai (Saiyajin):</b> com 25% ou menos de HP, role 1d100: <b>50 ou menos</b> ativa o Zenkai.</li>
       <li><b>Esquiva:</b> não rola dado extra. Se a redução da esquiva cobrir todo o dano, a esquiva é total e dá chance de contra-ataque.</li>
@@ -71,7 +71,7 @@
       <tr><td>HP Max</td><td>5 de HP. A barra de HP = <b id="g-base">50</b> (base de toda raça) + pontos × 5</td></tr>
       <tr><td>Ki Max</td><td>5 de Ki. A barra de Ki = base + pontos × 5</td></tr>
       <tr><td>Melee Damage</td><td>0,7 de dano. <b>Dano bruto = pontos × 0,7</b></td></tr>
-      <tr><td>Ki Damage</td><td>0,7 de dano de Ki. Ataques de Ki usam uma <b>porcentagem dos pontos</b></td></tr>
+      <tr><td>Ki Damage</td><td>0,7 de dano de Ki (<b>dano bruto = pontos × 0,7</b>). Os ataques de Ki usam uma <b>porcentagem dos pontos</b> e são criados como <a href="#habilidades">habilidades</a></td></tr>
       <tr><td>Melee Resistance</td><td>0,7 de resistência a golpes físicos</td></tr>
       <tr><td>Ki Resistance</td><td>0,7 de resistência a golpes de Ki</td></tr>
       <tr><td>Velocity</td><td>0,7 de velocidade (usado na esquiva e na chance de acerto)</td></tr>
@@ -84,8 +84,12 @@
     <ul>
       <li><b>Defesa (Melee ou Ki Resistance):</b> <b>passiva</b> (sem ação) reduz modificador × 0,7; <b>ativa</b> (defendendo) reduz modificador × 1,7. <b>Pelo menos 10% do dano bruto sempre passa</b> (evita o "zera dano").</li>
       <li><b>Esquiva (Velocity):</b> reduz modificador × 1,5 e gasta o turno. Não tem piso: se a redução for maior ou igual ao dano, a esquiva é total e você pode contra-atacar.</li>
-      <li><b>Ki Blast:</b> 10% do Ki Damage (<b>carregada: 40%</b>, no mesmo turno). O custo em Ki é igual ao dano causado.</li>
-      <li><b>Ki Feixe</b> (beam, como o Kamehameha): <b>70%</b> do Ki Damage com uma mão, <b>90%</b> com duas. Consome <b>30% da barra de Ki</b> (use o −10% três vezes).</li>
+      <li><b>Ataques de Ki</b> (Ki Blast, Ki Feixe, Barrage etc.) <b>não aparecem mais no card de Ki Damage</b>: eles são <b>habilidades</b> com dano calculado automaticamente (veja a seção Habilidades). Valores de referência do sistema:
+        <ul>
+          <li><b>Ki Blast:</b> 10% do Ki Damage (<b>carregada: 40%</b>, no mesmo turno). O custo em Ki é igual ao dano causado, mesmo se errar.</li>
+          <li><b>Barrage:</b> vários Ki Blasts de uma vez (5d2; Arcosian 10d2). Cada dado que tirar 2 acerta, e o custo em Ki é a soma do dano só dos disparos que acertaram.</li>
+          <li><b>Ki Feixe</b> (beam, como o Kamehameha): <b>70%</b> do Ki Damage com uma mão, <b>90%</b> com duas. Consome <b>30% da barra de Ki</b>.</li>
+        </ul></li>
       <li><b>Carregar Ki:</b> gasta 1 turno e recupera 10% do Ki total (Androide não carrega: regenera 5% por turno).</li>
     </ul>
   </section>
@@ -135,6 +139,15 @@
     </ul>
     <h3>Buffs, debuffs e custos</h3>
     <p>Em <b>⚙ Efeitos e custos</b> você coloca pontos em qualquer dos 7 atributos (<b>valor negativo = debuff</b>) e multiplicadores (×1,5 aumenta, ×0,5 reduz pela metade). Também define custo de Ki e HP e quanto recupera, em % da barra ou em pontos. Se faltar Ki ou HP, o card avisa e nada é gasto.</p>
+    <h3>Dano (habilidades de ataque)</h3>
+    <p>Habilidades dos tipos <b>Melee, Ki e Outro</b> podem causar dano (Passiva e Suporte não). Em <b>⚙ Efeitos e custos</b>, marque <b>Esta habilidade causa dano</b> e configure:</p>
+    <ul>
+      <li><b>Calcular sobre:</b> Ki Damage ou Melee Damage (seus pontos totais, já com raça, transformação, buffs e itens).</li>
+      <li><b>% do atributo</b> e <b>dano fixo</b>: dano = pontos × % + fixo. Exemplo: <b>Ki Blast = 10% do Ki Damage</b>.</li>
+      <li><b>Disparos:</b> 1 para um disparo só; 5 para uma barrage. Com vários disparos aparece o campo <b>Acertos</b>: informe quantos dados deram 2 antes de apertar <b>Usar</b>.</li>
+      <li><b>Custo de Ki = dano causado:</b> o Ki gasto é o dano (nos disparos que acertaram, na barrage). Também dá para usar o custo normal, como os 30% da barra do Ki Feixe.</li>
+    </ul>
+    <p>O card mostra o <b>dano calculado</b> e o <b>valor-alvo de acerto</b> (Velocity para base Melee, Precisão para base Ki). Ao usar, a ficha desconta o custo e mostra o resultado, por exemplo: <i>"Usada: −10 Ki · Dano: 10 · acerto: tire ≤ 55 (Precisão)"</i>. Ela não rola o dado: você rola no Discord e compara.</p>
     <h3>Compartilhar</h3>
     <p>Cada card tem <b>⬇ Baixar</b> (só aquela habilidade) e no topo da aba há <b>⬇ Baixar todas</b> e <b>⬆ Importar</b>. O mestre cria uma habilidade, baixa o arquivo e o jogador importa. Ela chega como habilidade nova, já configurada.</p>
   </section>
@@ -152,26 +165,16 @@
 
   <section id="pericias" class="card">
     <h2>9. Perícias</h2>
-    <p>São 22 perícias em 4 categorias (<b>Físicas, Mentais, Sociais e Especiais</b>) para situações fora do combate puro, como consertar uma nave ou convencer alguém.</p>
+    <p>São 23 perícias em 4 categorias (<b>Físicas, Mentais, Sociais e Especiais</b>) para situações fora do combate puro, como consertar uma nave ou convencer alguém.</p>
     <ul>
       <li>Você ganha <b>1 ponto de perícia por nível</b>. Cada perícia aceita de <b>0 a 40</b> pontos.</li>
       <li>O valor-alvo no 1d100 é <b>50 + pontos da perícia</b>. Exemplo: 20 pontos em Engenharia = 70, então você precisa tirar <b>70 ou menos</b>.</li>
-    </ul>
-  </section>
-
-  <section id="calculadora" class="card">
-    <h2>10. Calculadora</h2>
-    <p>Para quando você quer calcular um dano específico:</p>
-    <ul>
-      <li><b>Calculadora:</b> aceita <code>+ − × ÷ ^ ( )</code> e <code>%</code>. <code>200 + 10%</code> dá 220 e <code>200 × 10%</code> dá 20. Os botões "Valores da sua ficha" inserem dano bruto, Ki Blast, HP, Ki etc. na conta.</li>
-      <li><b>Porcentagem rápida:</b> "X% de Y", aumentar/diminuir Y em X%, e "X é quantos % de Y".</li>
-      <li><b>Dano recebido:</b> informe o dano bruto e os pontos do defensor para ver quanto passa na defesa passiva, ativa ou na esquiva.</li>
-      <li><b>Anotações de valores:</b> um bloco de texto salvo na ficha.</li>
+      <li><b>Precisão</b> (Física): serve para golpes à distância, tiros e <b>ataques de Ki</b>, como a Velocity serve para os golpes físicos. Aceita no máximo <b>25 pontos</b>, porque o acerto dela para em <b>75</b>.</li>
     </ul>
   </section>
 
   <section id="salvamento" class="card">
-    <h2>11. Salvamento e backup</h2>
+    <h2>10. Salvamento e backup</h2>
     <ul>
       <li><b>Salva sozinho.</b> Toda alteração é gravada na hora, no navegador do seu aparelho. Não precisa apertar nada.</li>
       <li><b>Fica só neste navegador.</b> Se você limpar os dados do navegador, trocar de aparelho ou usar aba anônima, as fichas não vão junto. Por isso faça <b>backup</b>.</li>

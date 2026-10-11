@@ -3,11 +3,12 @@ import { state, persist } from './state.js';
 import { $, h, clamp } from './utils.js';
 
 export const SKILL_MAX = 40, SKILL_BASE = 50;
-// [id, nome, o que resolve]
+// [id, nome, o que resolve, máx. de pontos (opcional; padrão 40)]
 const CATS = [
-  {ico: '🏃', name: 'Físicas', note: 'Complementam o Velocity — preenchem lacunas que ele não cobre.', list: [
+  {ico: '🏃', name: 'Físicas', note: 'Complementam o Velocity (golpes corpo a corpo) — a Precisão faz o mesmo papel para ataques à distância e de Ki.', list: [
     ['furtividade', 'Furtividade', 'Se esconder, se mover sem ser notado, se infiltrar.'],
-    ['rastreamento', 'Rastreamento', 'Seguir pistas, rastrear alvos em qualquer terreno.']]},
+    ['rastreamento', 'Rastreamento', 'Seguir pistas, rastrear alvos em qualquer terreno.'],
+    ['precisao', 'Precisão', 'Acertar golpes à distância, tiros e ataques de Ki (como a Velocity é para os golpes físicos). Máx. 25 pontos: acerto máximo 75.', 25]]},
   {ico: '🧠', name: 'Mentais', note: 'Inteligência, observação e conhecimento fora de combate.', list: [
     ['intelecto', 'Intelecto', 'Raciocínio lógico, dedução, quebra-cabeças, xadrez mental.'],
     ['investigacao', 'Investigação', 'Examinar cenas de crime, encontrar pistas, juntar evidências.'],
@@ -33,12 +34,17 @@ const CATS = [
     ['erudicao', 'Erudição', 'História, cultura, raças, Esferas do Dragão, lore do universo Dragon Ball.']]}
 ];
 const ALL = CATS.flatMap(c => c.list.map(s => s[0]));
-const get = id => clamp(Math.floor(Number(state.pericias[id]) || 0), 0, SKILL_MAX);
+const MAXES = Object.fromEntries(CATS.flatMap(c => c.list.filter(s => s[3]).map(s => [s[0], s[3]])));
+const maxOf = id => MAXES[id] ?? SKILL_MAX;
+const get = id => clamp(Math.floor(Number(state.pericias[id]) || 0), 0, maxOf(id));
+// Valor-alvo (1d100) de uma perícia: 50 + pontos. Usado também pelas habilidades de ataque de Ki (Precisão).
+export const hitChance = id => SKILL_BASE + get(id);
 const refs = {};
 
 function card([id, name, desc]) {
-  const set = v => { const n = Number(v); state.pericias[id] = clamp(Number.isFinite(n) ? Math.floor(n) : (n > 0 ? SKILL_MAX : 0), 0, SKILL_MAX); persist(); render(); };
-  const input = h('input', {type: 'number', min: 0, max: SKILL_MAX, value: get(id),
+  const MX = maxOf(id);
+  const set = v => { const n = Number(v); state.pericias[id] = clamp(Number.isFinite(n) ? Math.floor(n) : (n > 0 ? MX : 0), 0, MX); persist(); render(); };
+  const input = h('input', {type: 'number', min: 0, max: MX, value: get(id),
     // Trava no próprio campo, enquanto digita/cola: negativo vira 0, acima de 40 vira 40, decimais são cortados.
     oninput: e => { if (e.target.value === '') return; set(e.target.value); e.target.value = get(id); },
     onchange: e => { e.target.value = get(id); }});
@@ -65,7 +71,7 @@ export function render() {
   const pool = state.level, spent = ALL.reduce((s, id) => s + get(id), 0), avail = Math.max(0, pool - spent), first = pool - avail + 1;
   $('#skillPoints').innerHTML = `Pontos de perícia disponíveis: <b>${avail}</b>` +
     (avail ? ` · referentes ${first === pool ? 'ao nível' : 'aos níveis'} <b>${first === pool ? pool : first + ' a ' + pool}</b>` : '') +
-    ' <small>(1 por nível · máx. 40 por perícia)</small>';
+    ' <small>(1 por nível · máx. 40 por perícia; Precisão máx. 25)</small>';
 }
 
 export function init() {

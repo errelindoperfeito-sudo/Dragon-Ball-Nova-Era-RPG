@@ -14,3 +14,7 @@ details.fx summary{cursor:pointer;font-weight:700}
 .fx-editor{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .fx-editor h4{font-size:.95em;color:var(--yellow)}
 .entry .cust-ki{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+
+.fx-dmg{color:#ffb347;font-weight:700;font-size:.92em}
+.hits{display:flex;align-items:center;gap:6px;font-size:.9em;color:var(--mut)}
+.hits input{width:72px}

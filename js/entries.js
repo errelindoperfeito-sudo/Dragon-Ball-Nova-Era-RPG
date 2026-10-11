@@ -1,8 +1,8 @@
 // entries.js — abas Habilidades e Itens (mesma mecânica): cards agrupados por tipo/categoria, passivas, ativáveis, exportar/importar.
 import { state, persist, commit } from './state.js';
-import { $, h, field, sel, clamp } from './utils.js';
+import { $, h, field, sel, clamp, fmt } from './utils.js';
 import { ABILITY_TYPES, ITEM_CATS, sanitizeEntry, blankEntry, fxEditor, fxText, isOn } from './effects.js';
-import { useEntry, payTurn } from './actions.js';
+import { useEntry, payTurn, damageInfo } from './actions.js';
 
 const CFG = {
   abilities: {key: 'abilities', groups: ABILITY_TYPES, gKey: 'type', noun: 'habilidade', nouns: 'habilidades', file: 'habilidade',
@@ -15,6 +15,7 @@ const CFG = {
     ids: {list: '#itemsList', empty: '#itemsEmpty', add: '#addItem', exp: '#exportItems', imp: '#importItems', file: '#fileItems'}}
 };
 const opened = new Set(), msgs = new Map();
+const live = {abilities: new Set(), items: new Set()}; // callbacks que atualizam as linhas de cada card quando os atributos mudam
 const slug = t => (t || 'sem-nome').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w-]+/g, '_').replace(/^_+|_+$/g, '') || 'arquivo';
 
 function notify(title, msg) {
@@ -32,9 +33,18 @@ function download(cfg, entries, file) {
 function card(cfg, e, rerender) {
   const A = cfg.key === 'abilities';
   const text = k => ev => { e[k] = ev.target.value; persist(); };
-  const line = h('div', {class: 'fx-line'}), msg = h('div', {class: 'fx-msg'});
+  const line = h('div', {class: 'fx-line'}), dmgEl = h('div', {class: 'fx-dmg'}), msg = h('div', {class: 'fx-msg'});
+  const hitsIn = h('input', {type: 'number', min: 0, step: 1}), hitsLbl = h('label', {class: 'hits', hidden: true}, 'Acertos', hitsIn); // barrage: dados que deram 2
   let el;
-  const refresh = () => { line.textContent = fxText(e); line.hidden = !line.textContent; el.classList.toggle('on', isOn(e)); };
+  const refresh = () => {
+    line.textContent = fxText(e); line.hidden = !line.textContent; el.classList.toggle('on', isOn(e));
+    const di = A ? damageInfo(e) : null;
+    dmgEl.hidden = !di;
+    if (di) dmgEl.textContent = `💥 Dano: ${fmt(di.per)}` + (di.shots > 1 ? ` por disparo (${di.shots}d2: cada 2 acerta)` : '') + ` · Acerto: tire ${di.chance} ou menos (${di.src})` + (di.costEq ? ' · Custo de Ki = dano' : '');
+    hitsLbl.hidden = !(di && di.shots > 1 && e.mode === 'active');
+    if (di) hitsIn.max = di.shots;
+  };
+  live[cfg.key].add(refresh);
   const change = () => { refresh(); commit(); };
   const structure = () => { commit(); rerender(); };
   const run = r => { msgs.set(e.id, r); commit(); rerender(); };
@@ -52,14 +62,14 @@ function card(cfg, e, rerender) {
   const act = e.mode === 'passive'
     ? h('label', {class: 'check switch'}, h('input', {type: 'checkbox', checked: e.on, onchange: ev => { e.on = ev.target.checked; structure(); }}), cfg.on)
     : e.mode === 'active'
-      ? h('div', {class: 'fx-btns'},
-          h('button', {class: e.on ? '' : 'pri', textContent: f.dur === 'instant' ? 'Usar' : e.on ? 'Desativar' : 'Ativar', onclick: () => run(useEntry(e, cfg.key))}),
+      ? h('div', {class: 'fx-btns'}, A ? hitsLbl : null,
+          h('button', {class: e.on ? '' : 'pri', textContent: f.dur === 'instant' ? 'Usar' : e.on ? 'Desativar' : 'Ativar', onclick: () => run(useEntry(e, cfg.key, hitsIn.value))}),
           turn ? h('button', {textContent: 'Pagar turno', onclick: () => run(payTurn(e))}) : null)
       : null;
   el = h('article', {class: 'card entry ' + (A ? 'ability' : 'item') + ' m-' + e.mode + (e.used ? ' used' : '')},
     head, sub,
     A && e.mode === 'info' ? field('Custo em Ki (anotação)', h('input', {value: e.cost, oninput: text('cost'), placeholder: 'ex: 20'})) : null,
-    line, act, msg,
+    line, dmgEl, act, msg,
     field('Descrição / efeito', h('textarea', {value: e.desc, oninput: text('desc')})),
     A ? field('Observações', h('textarea', {value: e.obs, oninput: text('obs')})) : null,
     e.mode === 'info' ? null : h('details', {class: 'fx', open: opened.has(e.id), ontoggle: ev => ev.target.open ? opened.add(e.id) : opened.delete(e.id)},
@@ -76,6 +86,7 @@ function card(cfg, e, rerender) {
 export function makeTab(kind) {
   const cfg = CFG[kind];
   const render = () => {
+    live[cfg.key].clear();
     const list = state[cfg.key];
     $(cfg.ids.empty).hidden = list.length > 0;
     $(cfg.ids.list).replaceChildren(...cfg.groups.flatMap(g => {
@@ -101,5 +112,6 @@ export function makeTab(kind) {
     $(cfg.ids.file).onchange = ev => { const f = ev.target.files[0]; ev.target.value = ''; onFile(f); };
     render();
   };
-  return {init, render};
+  const refresh = () => live[cfg.key].forEach(f => f());
+  return {init, render, refresh};
 }

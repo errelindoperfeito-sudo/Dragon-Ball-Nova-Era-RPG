@@ -36,8 +36,7 @@ export function reads(a, S) {
     case 'hpMax': return [['Barra base', '+' + BASE_BAR], ['Pontos × 5', '+' + fmt(t * 5)]];
     case 'kiMax': return [['Barra base', '+' + BASE_BAR], ['Pontos × 5', '+' + fmt(t * 5)], ['Carregar Ki (+10%/turno)', fmt(S.kiTotal * 0.1)]];
     case 'meleeDmg': return [['Dano bruto', fmt(m)]];
-    case 'kiDmg': return [['Dano bruto', fmt(m)], ['Ki Blast (10%)', fmt(t * 0.1)], ['Ki Blast carregada (40%)', fmt(t * 0.4)], ['Barrage', (getRace(state.race, state.custom).barrage || 5) + 'd2'],
-      ['Ki Feixe — 1 mão (70%)', fmt(t * 0.7)], ['Ki Feixe — 2 mãos (90%)', fmt(t * 0.9)]];
+    case 'kiDmg': return [['Dano bruto', fmt(m)]]; // Ki Blast, Feixe, Barrage etc. agora são Habilidades com dano configurável
     case 'meleeRes': case 'kiRes': return [['Redução passiva', fmt(m * 0.7)], ['Redução ativa', fmt(m * 1.7)], ['Dano mínimo que passa', '10%']];
     case 'vel': return [['Chance de acerto', S.chance + '%'], ['Redução na esquiva', fmt(m * 1.5)]];
     default: return [];
