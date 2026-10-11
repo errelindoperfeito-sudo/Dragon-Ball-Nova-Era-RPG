@@ -8,21 +8,23 @@ import * as abilities from './abilities.js';
 import * as items from './items.js';
 import * as skills from './skills.js';
 import * as notes from './notes.js';
+import * as calc from './calc.js';
 import * as sidebar from './sidebar.js';
 
 syncUnlocks();
 subscribe(clampBars);
 subscribe(ui.render);
 subscribe(() => skills.render());
+subscribe(calc.renderChips);
 subscribe(sidebar.render);
 ui.init(); initBars(); initXp();
-abilities.init(); skills.init(); items.init(); notes.init(); sidebar.init();
+abilities.init(); skills.init(); items.init(); notes.init(); calc.init(); sidebar.init();
 clampBars();
 ui.render();
 
 // Ao trocar/criar/deletar/resetar a ficha ativa: recarrega tudo que não depende só do estado.
 document.addEventListener('sheetchange', () => {
-  ui.closePanels(); notes.refresh(); abilities.render(); items.render();
+  ui.closePanels(); notes.refresh(); calc.refresh(); abilities.render(); items.render();
   commit();
   window.scrollTo({ top: 0 });
 });

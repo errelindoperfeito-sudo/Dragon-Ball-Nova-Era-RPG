@@ -1,10 +1,9 @@
 // ui.js — renderização e eventos visuais (cabeçalho, atributos, painéis, abas, diálogo de raça).
 import { state, commit, persist } from './state.js';
-import { stats, reads, activeForm, activeTechs } from './attributes.js';
+import { stats, reads, activeForm } from './attributes.js';
 import { RACES, getRace, CUSTOM_ID } from './races.js';
 import { openCustom } from './custom.js';
 import { getTransforms } from './transformations.js';
-import { TECHS } from './techniques.js';
 import { need, syncUnlocks } from './level.js';
 import { resetActive } from './sheets.js';
 import { ATTRS, ABSORB_ATTRS, LABEL, $, $$, h, field, fmt, sgn, describe } from './utils.js';
@@ -24,7 +23,7 @@ function buildAttrs() {
 
 // ---------- render geral ----------
 export function render() {
-  const S = stats(), form = activeForm(), techs = activeTechs(), R = getRace(state.race, state.custom);
+  const S = stats(), form = activeForm(), R = getRace(state.race, state.custom);
 
   setVal($('#nameInput'), state.name);
   $('#raceBtn').textContent = `${R.name} ▾`;
@@ -35,7 +34,6 @@ export function render() {
 
   const badges = [];
   if (form) badges.push(['form', '⚡ ' + form.name]);
-  techs.forEach(t => badges.push(['tech', '🌀 ' + t.name]));
   if (state.mutant && state.race === 'saiyajin') badges.push(['mut', 'MUTANTE']);
   $('#badges').replaceChildren(...badges.map(([c, t]) => h('span', {class: 'badge ' + c, textContent: t})));
 
@@ -57,14 +55,13 @@ export function render() {
     if (L.race) rows.push(['r', R.perLevelAll ? 'Raça (por nível)' : 'Raça', sgn(L.race)]);
     if (L.absorb) rows.push(['a', 'Absorção', sgn(L.absorb)]);
     if (L.form) rows.push(['f', form.name, sgn(L.form)]);
-    if (L.tech) rows.push(['t', 'Técnicas', sgn(L.tech)]);
     if (L.abil) rows.push(['b', 'Habilidades', sgn(L.abil)]);
     if (L.item) rows.push(['i', 'Itens', sgn(L.item)]);
     rows.push(['sum', 'Total de pontos', fmt(t)]);
     $('.layers', card).innerHTML = rows.map(([c, l, v]) => `<li class="${c}"><span>${l}</span><b>${v}</b></li>`).join('');
     $('.result', card).innerHTML = `[ ${fmt(t)} ] → <b>${isPool ? fmt(a === 'hpMax' ? S.hpTotal : S.kiTotal) : fmt(t * 0.7)}</b>${isPool ? (a === 'hpMax' ? ' HP' : ' Ki') : ''}`;
     $('.reads', card).innerHTML = reads(a, S).map(([l, v]) => `<div><span>${l}</span><b>${v}</b></div>`).join('');
-    card.classList.toggle('boosted', !!(L.form || L.tech || L.abil || L.item));
+    card.classList.toggle('boosted', !!(L.form || L.abil || L.item));
   });
 
   // Pontos disponíveis = pontos ganhos por nível − pontos já investidos (nunca negativo). Mostra de quais níveis são.
@@ -80,17 +77,10 @@ export function render() {
   mb.hidden = state.race !== 'saiyajin';
   mb.classList.toggle('on', state.mutant);
   $('#btnForms').classList.toggle('on', !$('#formsPanel').hidden);
-  $('#btnTechs').classList.toggle('on', !$('#techsPanel').hidden);
 
   panel('#formsPanel', state.mutant ? 'Transformações — Saiyajin Mutante' : `⚡ Transformações — ${R.name}`, getTransforms(state.race, state.mutant, state.custom),
     t => t.id === state.form, toggleForm,
-    state.race === CUSTOM_ID ? 'Nenhuma transformação criada. Use "Editar Custom Race" para criar.' : 'Esta raça não possui transformações. Use as Técnicas.', notice);
-  panel('#techsPanel', '🌀 Técnicas (valem para todas as raças e acumulam com a transformação)', TECHS, t => state.techs.includes(t.id), t => {
-    const on = state.techs.includes(t.id);
-    state.techs = state.techs.filter(id => id !== t.id && TECHS.find(x => x.id === id).group !== t.group);
-    if (!on) state.techs.push(t.id);
-    commit();
-  });
+    state.race === CUSTOM_ID ? 'Nenhuma transformação criada. Use "Editar Custom Race" para criar.' : 'Esta raça não possui transformações. Poderes como Kaio-Ken são registrados na aba Habilidades.', notice);
 
   $$('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab));
   $$('.tab').forEach(s => s.hidden = s.id !== 'tab-' + state.tab);
@@ -169,7 +159,7 @@ function openAbsorb() {
     $('#absorbDlg').close(); commit();
   };
   $('#absorbDlgBody').replaceChildren(h('h2', {}, 'Absorção'),
-    h('p', {class: 'absorb-rules'}, 'Só vale para inimigos derrotados em combate, e o mestre decide se o alvo é absorvível. Não é possível absorver outro Majin (nem criatura que manipule o corpo livremente). A absorção é permanente: você recebe 20% dos atributos do alvo, aprende todas as técnicas dele e recebe todo o conhecimento que ele tinha.'),
+    h('p', {class: 'absorb-rules'}, 'Só vale para inimigos derrotados em combate, e o mestre decide se o alvo é absorvível. Não é possível absorver outro Majin (nem criatura que manipule o corpo livremente). A absorção é permanente: você recebe 20% dos atributos do alvo, aprende todas as habilidades dele e recebe todo o conhecimento que ele tinha.'),
     h('p', {}, 'Informe os valores de atributo que você está recebendo (HP Max e Ki Max não são cobrados). Eles serão somados aos pontos que você já investiu. Use valor negativo para corrigir um erro.'),
     h('div', {class: 'absorb-grid'}, ABSORB_ATTRS.map(a => field(`${LABEL[a]} (já absorvido: ${fmt(state.absorbed[a])})`, inputs[a]))),
     h('div', {class: 'dlg-actions'}, h('button', {textContent: 'Aplicar', onclick: apply}), h('button', {textContent: 'Cancelar', onclick: () => $('#absorbDlg').close()})));
@@ -193,8 +183,8 @@ function setAvatar(file) {
   r.readAsDataURL(file);
 }
 
-// Fecha os painéis de Transformações/Técnicas (usado ao trocar de ficha).
-export function closePanels() { notice = ''; $('#formsPanel').hidden = true; $('#techsPanel').hidden = true; }
+// Fecha o painel de Transformações (usado ao trocar de ficha).
+export function closePanels() { notice = ''; $('#formsPanel').hidden = true; }
 
 // ---------- eventos ----------
 export function init() {
@@ -205,9 +195,7 @@ export function init() {
   $('#avatarRemove').onclick = () => { state.avatar = null; commit(); };
   $('#raceBtn').onclick = openRace;
   $('#btnCustom').onclick = openCustom;
-  const toggle = (id, other) => () => { $(other).hidden = true; $(id).hidden = !$(id).hidden; render(); };
-  $('#btnForms').onclick = toggle('#formsPanel', '#techsPanel');
-  $('#btnTechs').onclick = toggle('#techsPanel', '#formsPanel');
+  $('#btnForms').onclick = () => { $('#formsPanel').hidden = !$('#formsPanel').hidden; render(); };
   $('#btnMutant').onclick = () => { state.mutant = !state.mutant; state.form = null; commit(); };
   $('#btnReset').onclick = () => { if (confirm('Resetar esta ficha? Só a ficha aberta é zerada (as outras não mudam). Esta ação não pode ser desfeita.')) resetActive(); };
   $$('#tabs button').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; persist(); render(); });

@@ -17,5 +17,4 @@ body[data-aura="on"] .avatar{border-color:var(--yellow);box-shadow:0 0 26px 4px 
 .badges{display:flex;flex-wrap:wrap;gap:6px;min-height:24px}
 .badge{padding:2px 10px;border-radius:99px;font-size:.8em;font-weight:700;border:1px solid}
 .badge.form{border-color:var(--yellow);color:var(--yellow);background:#ffc21a1f;box-shadow:0 0 10px #ffc21a66}
-.badge.tech{border-color:var(--green);color:var(--green);background:#63d84a1f}
 .badge.mut{border-color:var(--red);color:var(--red);background:#e8401c22}

@@ -1,0 +1,25 @@
+/* Guia do Sistema */
+.g-bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 16px;background:#000d;backdrop-filter:blur(6px);border-bottom:2px solid var(--line)}
+.g-back,.g-top-link{display:inline-block;text-decoration:none;color:var(--tx);border:2px solid var(--orange);background:#2a1a0c;border-radius:8px;padding:6px 14px;font-weight:700}
+.g-back:hover,.g-top-link:hover{background:var(--orange);color:#1a0c00;border-color:var(--yellow)}
+.g-main{width:min(900px,100%);margin:0 auto;padding:var(--gap) 16px 48px;display:flex;flex-direction:column;gap:var(--gap)}
+.g-main section,.g-toc{scroll-margin-top:70px}
+.g-toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 16px}
+.g-toc b{grid-column:1/-1;color:var(--yellow);font-family:var(--title)}
+.g-toc a{color:var(--tx);text-decoration:none;padding:3px 0}
+.g-toc a:hover{color:var(--yellow)}
+.g-main section h2{margin-bottom:10px}
+.g-main h3{margin:14px 0 6px;font-size:1.1em}
+.g-main h4{margin:10px 0 6px;color:var(--orange);font-size:.95em}
+.g-main p,.g-main ul,.g-main ol{margin-bottom:10px}
+.g-main ul,.g-main ol{padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.g-main ul ul{margin:6px 0 0}
+.g-main code{background:#0009;border:1px solid var(--line);border-radius:5px;padding:0 6px}
+.g-main a{color:var(--yellow)}
+.callout{border:2px solid #3fd0ff;border-radius:var(--r);background:linear-gradient(135deg,#0a2a5e,#1b1050);padding:12px 14px;margin-bottom:12px;box-shadow:0 0 18px #3fd0ff55}
+.g-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:.92em}
+.g-table th,.g-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.g-table th{background:#000a;color:var(--yellow)}
+.g-race{border-top:2px dashed var(--line);padding-top:6px;margin-top:10px;overflow-x:auto}
+.g-end{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+@media (max-width:600px){.g-table{font-size:.85em}}

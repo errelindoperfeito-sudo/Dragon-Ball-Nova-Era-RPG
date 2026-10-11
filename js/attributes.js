@@ -1,29 +1,24 @@
-// attributes.js — cálculo de atributos em camadas (base → raça → transformação → técnica) e leituras rápidas.
+// attributes.js — cálculo de atributos em camadas (base → raça → transformação → habilidades → itens) e leituras rápidas.
 import { state } from './state.js';
 import { ATTRS, BASE_BAR, fmt } from './utils.js';
 import { getRace } from './races.js';
 import { getTransforms } from './transformations.js';
-import { TECHS } from './techniques.js';
 import { fxTotals } from './effects.js';
 
 export const activeForm = () => getTransforms(state.race, state.mutant, state.custom).find(t => t.id === state.form) || null;
-export const activeTechs = () => TECHS.filter(t => state.techs.includes(t.id));
 
-// Bônus fixos somam; multiplicadores vêm depois (transformação, depois técnicas em cadeia).
+// Bônus fixos somam; multiplicadores vêm depois. Ordem das camadas: base → raça → transformação → habilidades → itens.
 export function layers(a) {
-  const R = getRace(state.race, state.custom), f = activeForm(), ts = activeTechs();
+  const R = getRace(state.race, state.custom), f = activeForm();
   const base = state.base[a], race = (R.bonus[a] || 0) + (R.perLevelAll ? state.level : 0);
   const absorb = state.race === 'majin' ? (state.absorbed[a] || 0) : 0; // Absorção do Majin (permanente)
   const s1 = base + race + absorb;
   const s2 = (s1 + (f?.add[a] || 0)) * (f?.mult[a] || 1);
-  const tAdd = ts.reduce((s, t) => s + (t.add[a] || 0), 0);
-  const tMul = ts.reduce((m, t) => m * (t.mult[a] || 1), 1);
-  const s3 = (s2 + tAdd) * tMul;
   // Habilidades (passivas/ativas ligadas) e depois itens: pontos somam, multiplicadores multiplicam. Debuffs nunca levam o total abaixo de 0.
   const ab = fxTotals(state.abilities), it = fxTotals(state.items);
-  const s4 = (s3 + (ab.add[a] || 0)) * (ab.mult[a] || 1);
-  const s5 = (s4 + (it.add[a] || 0)) * (it.mult[a] || 1);
-  return {base, race, absorb, form:s2 - s1, tech:s3 - s2, abil:s4 - s3, item:s5 - s4, total:Math.max(0, s5)};
+  const s3 = (s2 + (ab.add[a] || 0)) * (ab.mult[a] || 1);
+  const s4 = (s3 + (it.add[a] || 0)) * (it.mult[a] || 1);
+  return {base, race, absorb, form:s2 - s1, abil:s3 - s2, item:s4 - s3, total:Math.max(0, s4)};
 }
 
 export function stats() {

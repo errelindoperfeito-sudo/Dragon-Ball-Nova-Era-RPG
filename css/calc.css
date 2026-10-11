@@ -1,0 +1,22 @@
+/* Aba Calculadora */
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:var(--gap);align-items:start}
+.calc-side{display:flex;flex-direction:column;gap:var(--gap)}
+.calc-card{display:flex;flex-direction:column;gap:10px}
+.calc-card h4{font-size:.9em;color:var(--yellow);margin-top:4px}
+.expr{font:700 1.3em var(--font);text-align:right}
+.preview{min-height:1.6em;text-align:right;font:800 1.5em var(--title);color:var(--green)}
+.preview.bad{font-size:1em;color:var(--red)}
+.keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.keypad button{padding:12px 0;font-size:1.15em}
+.keypad .op{background:#3a2410;color:var(--yellow)}
+.keypad .eq{grid-column:1/-1}
+.chips,.hist{display:flex;flex-wrap:wrap;gap:6px}
+.hist-item{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pct-row{display:grid;grid-template-columns:1fr auto 1fr auto auto;gap:6px;align-items:center;color:var(--mut)}
+.pct-row:nth-of-type(2){grid-template-columns:1fr auto auto 1fr auto auto}
+.pct-row .res{color:var(--green);min-width:3.5em;text-align:right}
+.pts-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.dmg-out{display:flex;flex-direction:column;gap:4px}
+.dmg-final{display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--line);padding-top:6px}
+.dmg-final b{font:800 1.8em var(--title);color:var(--yellow)}
+@media (max-width:600px){.pct-row{grid-template-columns:1fr 1fr!important}.pct-row .res{text-align:left}}

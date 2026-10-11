@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do Sistema — Dragon Ball Z: Nova Era</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/brand.css">
+<link rel="stylesheet" href="css/guia.css">
+</head>
+<body>
+<div class="brand">
+  <span class="orb" aria-hidden="true"></span>
+  <h1 class="logo">Dragon Ball Z: <em>Nova Era</em></h1>
+  <span class="orb" aria-hidden="true"></span>
+</div>
+<div class="g-bar"><a class="g-back" href="index.html">← Voltar para as fichas</a><strong>📖 Guia do Sistema</strong></div>
+
+<main class="g-main">
+  <nav class="g-toc card" aria-label="Índice">
+    <b>Neste guia</b>
+    <a href="#comecar">1. Primeiros passos</a>
+    <a href="#dados">2. Sistema de dados (1d100)</a>
+    <a href="#calculos">3. Atributos e cálculos automáticos</a>
+    <a href="#racas">4. Raças</a>
+    <a href="#transformacoes">5. Transformações</a>
+    <a href="#custom">6. Custom Race</a>
+    <a href="#habilidades">7. Habilidades</a>
+    <a href="#itens">8. Itens</a>
+    <a href="#pericias">9. Perícias</a>
+    <a href="#calculadora">10. Calculadora</a>
+    <a href="#salvamento">11. Salvamento e backup</a>
+  </nav>
+
+  <section id="comecar" class="card">
+    <h2>1. Primeiros passos</h2>
+    <p>A ficha faz as contas por você: você só informa os pontos, e os modificadores, danos, reduções e chances já aparecem prontos.</p>
+    <ol>
+      <li><b>Crie ou abra uma ficha</b> no menu <b>☰ Fichas</b> (canto superior esquerdo). Cada personagem tem a sua própria ficha.</li>
+      <li><b>Dê um nome, uma foto e escolha a raça</b> no cabeçalho. A raça aplica bônus automaticamente.</li>
+      <li><b>Distribua os pontos</b> nos 7 atributos. Eles aparecem em <b>Pontos disponíveis</b>, com o nível de onde vêm.</li>
+      <li><b>Controle HP e Ki</b> pelas barras: botões de porcentagem, ou clique no valor para digitar (<code>50</code> define, <code>+10</code> soma, <code>-20</code> subtrai).</li>
+      <li><b>Suba de nível</b> pela barra de XP. O nível sobe sozinho quando o XP enche e libera transformações e habilidades de nível.</li>
+    </ol>
+    <p>As abas: <b>Ficha</b> (atributos e transformações), <b>Habilidades</b>, <b>Perícias</b>, <b>Itens</b>, <b>Calculadora</b> e <b>Anotações</b>.</p>
+  </section>
+
+  <section id="dados" class="card">
+    <h2>2. Sistema de dados (1d100)</h2>
+    <div class="callout">
+      <b>Regra de ouro: dado BAIXO é BOM.</b><br>
+      Role <b>1d100</b> e compare com o seu <b>valor-alvo</b>. Tirou <b>igual ou menor</b> = <b>acertou ✅</b>. Tirou <b>maior</b> = <b>errou ❌</b>.
+    </div>
+    <p><b>Exemplo:</b> valor-alvo 55. Tirou 40 ✅ · tirou 55 ✅ · tirou 56 ❌. Quanto <b>maior</b> o valor-alvo, <b>mais chance</b> de acertar.</p>
+    <ul>
+      <li><b>Ataques:</b> o valor-alvo base é <b>50</b>. A cada <b>20 pontos de Velocity</b> ele sobe <b>+1</b> (abaixo de 20 pontos não soma nada). O máximo é <b>75</b>. A ficha mostra a sua chance em Velocity.</li>
+      <li><b>Perícias:</b> valor-alvo = <b>50 + pontos da perícia</b> (máximo 40 pontos, então até 90). Veja a seção de Perícias.</li>
+      <li><b>Barrage de Ki Blasts:</b> rola-se <b>5d2</b> (<b>10d2</b> para Arcosian). Cada dado que tirar <b>2</b> é um disparo que acerta.</li>
+      <li><b>Zenkai (Saiyajin):</b> com 25% ou menos de HP, role 1d100: <b>50 ou menos</b> ativa o Zenkai.</li>
+      <li><b>Esquiva:</b> não rola dado extra. Se a redução da esquiva cobrir todo o dano, a esquiva é total e dá chance de contra-ataque.</li>
+    </ul>
+  </section>
+
+  <section id="calculos" class="card">
+    <h2>3. Atributos e cálculos automáticos</h2>
+    <p>São 7 atributos. Cada ponto investido vale um valor <b>fixo</b> (não é multiplicador):</p>
+    <table class="g-table">
+      <tr><th>Atributo</th><th>O que cada ponto dá</th></tr>
+      <tr><td>HP Max</td><td>5 de HP. A barra de HP = <b id="g-base">50</b> (base de toda raça) + pontos × 5</td></tr>
+      <tr><td>Ki Max</td><td>5 de Ki. A barra de Ki = base + pontos × 5</td></tr>
+      <tr><td>Melee Damage</td><td>0,7 de dano. <b>Dano bruto = pontos × 0,7</b></td></tr>
+      <tr><td>Ki Damage</td><td>0,7 de dano de Ki. Ataques de Ki usam uma <b>porcentagem dos pontos</b></td></tr>
+      <tr><td>Melee Resistance</td><td>0,7 de resistência a golpes físicos</td></tr>
+      <tr><td>Ki Resistance</td><td>0,7 de resistência a golpes de Ki</td></tr>
+      <tr><td>Velocity</td><td>0,7 de velocidade (usado na esquiva e na chance de acerto)</td></tr>
+    </table>
+
+    <h3>Como o total é calculado (camadas)</h3>
+    <p>Cada card mostra as camadas separadas, na ordem: <b>Base → Raça → Transformação → Habilidades → Itens</b>. Dentro de cada camada, os <b>bônus em pontos somam primeiro</b> e os <b>multiplicadores vêm depois</b>. Debuffs podem reduzir um atributo, mas nunca abaixo de 0.</p>
+
+    <h3>Leituras prontas nos cards</h3>
+    <ul>
+      <li><b>Defesa (Melee ou Ki Resistance):</b> <b>passiva</b> (sem ação) reduz modificador × 0,7; <b>ativa</b> (defendendo) reduz modificador × 1,7. <b>Pelo menos 10% do dano bruto sempre passa</b> (evita o "zera dano").</li>
+      <li><b>Esquiva (Velocity):</b> reduz modificador × 1,5 e gasta o turno. Não tem piso: se a redução for maior ou igual ao dano, a esquiva é total e você pode contra-atacar.</li>
+      <li><b>Ki Blast:</b> 10% do Ki Damage (<b>carregada: 40%</b>, no mesmo turno). O custo em Ki é igual ao dano causado.</li>
+      <li><b>Ki Feixe</b> (beam, como o Kamehameha): <b>70%</b> do Ki Damage com uma mão, <b>90%</b> com duas. Consome <b>30% da barra de Ki</b> (use o −10% três vezes).</li>
+      <li><b>Carregar Ki:</b> gasta 1 turno e recupera 10% do Ki total (Androide não carrega: regenera 5% por turno).</li>
+    </ul>
+  </section>
+
+  <section id="racas" class="card">
+    <h2>4. Raças</h2>
+    <p>Cada raça dá <b>bônus iniciais de atributo</b>, um <b>ritmo de ganho de pontos por nível</b>, uma <b>passiva</b> e, em algumas, <b>transformações</b>. Ao trocar de raça, a ficha pergunta se você quer resetar ou manter os pontos investidos. Há ainda a <a href="#custom">Custom Race</a>, que você monta do zero.</p>
+    <div id="racasBody"></div>
+  </section>
+
+  <section id="transformacoes" class="card">
+    <h2>5. Transformações</h2>
+    <ul>
+      <li>O botão <b>Transformações</b> (aba Ficha) lista as formas da sua raça, com nível exigido e bônus. Formas acima do seu nível ficam <b>🔒 bloqueadas</b>.</li>
+      <li>Só <b>uma transformação fica ativa por vez</b>. Ao ativar, os bônus entram nos atributos na hora; ao desativar, saem.</li>
+      <li>A forma ativa aparece em destaque no cabeçalho. Subiu de nível? As formas liberadas aparecem sozinhas.</li>
+      <li><b>Saiyajin Mutante:</b> o Saiyajin tem um botão que troca para a árvore de formas do Berserker (como Broly).</li>
+      <li><b>Absorção (Majin, nível 25):</b> em Transformações, o botão Ativar abre um card onde você informa os valores de atributo recebidos do alvo derrotado. Eles somam permanentemente nos seus atributos (HP/Ki Max não são cobrados). Só vale para inimigos derrotados em combate, o mestre decide se o alvo é absorvível e não dá para absorver outro Majin.</li>
+      <li>Transformações da <b>Custom Race</b> podem ter <b>gasto de Ki</b>, cobrado ao ativar ou por turno (botão <b>Pagar turno</b>). Sem Ki suficiente, ela não ativa.</li>
+    </ul>
+  </section>
+
+  <section id="custom" class="card">
+    <h2>6. Custom Race</h2>
+    <p>Quer uma raça que não existe? Na lista de raças, escolha <b>🛠 Custom Race</b> (depois, o botão <b>Editar Custom Race</b> reabre o editor). Você define:</p>
+    <ul>
+      <li><b>Nome</b> e <b>descrição / passiva racial</b> (aparecem na ficha).</li>
+      <li><b>Ganho de pontos por nível:</b> 1 por nível, 1 a cada 2, 1 a cada 3, ou +1 em todos os atributos por nível.</li>
+      <li><b>Bônus de atributos iniciais</b> em pontos.</li>
+      <li><b>Suas transformações:</b> nome, nível que desbloqueia, <b>bônus em pontos e/ou multiplicadores</b> em qualquer atributo, <b>gasto de Ki</b> (em % da barra ou pontos; ao ativar ou por turno) e descrição.</li>
+    </ul>
+    <p>Tudo é salvo na ficha automaticamente e continua lá mesmo que você troque de raça e volte. O atalho "Aplicar em todos" preenche os 5 atributos de combate de uma vez.</p>
+  </section>
+
+  <section id="habilidades" class="card">
+    <h2>7. Habilidades</h2>
+    <p>Na aba <b>Habilidades</b> você registra tudo o que seu personagem aprende (inclusive Kaio-Ken, Místico e outras técnicas, que agora são habilidades). Elas ficam <b>agrupadas por tipo</b>: Melee, Ki, Suporte, Passiva e Outro.</p>
+    <h3>Funcionamento</h3>
+    <ul>
+      <li><b>Só registro:</b> uma anotação, com nome, descrição e custo em texto.</li>
+      <li><b>Passiva:</b> buffs e debuffs <b>sempre ligados</b> (há um botão Ligada para desligar). Escolher o tipo <b>Passiva</b> já ativa esse funcionamento.</li>
+      <li><b>Ativável:</b> tem o botão <b>Ativar</b>. Ao apertar, a ficha <b>desconta o custo de Ki e/ou HP</b> automaticamente.
+        <ul>
+          <li><i>Fica ativa:</i> aplica os buffs até você desativar. O custo é cobrado ao ativar ou por turno (<b>Pagar turno</b>).</li>
+          <li><i>Instantânea:</i> o botão vira <b>Usar</b> e só executa custo e recuperação (ataques, curas).</li>
+        </ul></li>
+    </ul>
+    <h3>Buffs, debuffs e custos</h3>
+    <p>Em <b>⚙ Efeitos e custos</b> você coloca pontos em qualquer dos 7 atributos (<b>valor negativo = debuff</b>) e multiplicadores (×1,5 aumenta, ×0,5 reduz pela metade). Também define custo de Ki e HP e quanto recupera, em % da barra ou em pontos. Se faltar Ki ou HP, o card avisa e nada é gasto.</p>
+    <h3>Compartilhar</h3>
+    <p>Cada card tem <b>⬇ Baixar</b> (só aquela habilidade) e no topo da aba há <b>⬇ Baixar todas</b> e <b>⬆ Importar</b>. O mestre cria uma habilidade, baixa o arquivo e o jogador importa. Ela chega como habilidade nova, já configurada.</p>
+  </section>
+
+  <section id="itens" class="card">
+    <h2>8. Itens</h2>
+    <p>Os itens funcionam como as habilidades, com foco em buffs e passivas:</p>
+    <ul>
+      <li><b>Só registro:</b> nome, quantidade, categoria e descrição.</li>
+      <li><b>Passivo:</b> buffs/debuffs enquanto o item estiver <b>ativo/equipado</b>.</li>
+      <li><b>Usável:</b> botão <b>Usar</b>, que consome 1 unidade (se configurado) e aplica custo e recuperação (por exemplo, uma Senzu Bean que cura HP e Ki).</li>
+      <li>Marque <b>Usado/consumido</b> para o item deixar de valer. Itens também podem ser baixados e importados em arquivo.</li>
+    </ul>
+  </section>
+
+  <section id="pericias" class="card">
+    <h2>9. Perícias</h2>
+    <p>São 22 perícias em 4 categorias (<b>Físicas, Mentais, Sociais e Especiais</b>) para situações fora do combate puro, como consertar uma nave ou convencer alguém.</p>
+    <ul>
+      <li>Você ganha <b>1 ponto de perícia por nível</b>. Cada perícia aceita de <b>0 a 40</b> pontos.</li>
+      <li>O valor-alvo no 1d100 é <b>50 + pontos da perícia</b>. Exemplo: 20 pontos em Engenharia = 70, então você precisa tirar <b>70 ou menos</b>.</li>
+    </ul>
+  </section>
+
+  <section id="calculadora" class="card">
+    <h2>10. Calculadora</h2>
+    <p>Para quando você quer calcular um dano específico:</p>
+    <ul>
+      <li><b>Calculadora:</b> aceita <code>+ − × ÷ ^ ( )</code> e <code>%</code>. <code>200 + 10%</code> dá 220 e <code>200 × 10%</code> dá 20. Os botões "Valores da sua ficha" inserem dano bruto, Ki Blast, HP, Ki etc. na conta.</li>
+      <li><b>Porcentagem rápida:</b> "X% de Y", aumentar/diminuir Y em X%, e "X é quantos % de Y".</li>
+      <li><b>Dano recebido:</b> informe o dano bruto e os pontos do defensor para ver quanto passa na defesa passiva, ativa ou na esquiva.</li>
+      <li><b>Anotações de valores:</b> um bloco de texto salvo na ficha.</li>
+    </ul>
+  </section>
+
+  <section id="salvamento" class="card">
+    <h2>11. Salvamento e backup</h2>
+    <ul>
+      <li><b>Salva sozinho.</b> Toda alteração é gravada na hora, no navegador do seu aparelho. Não precisa apertar nada.</li>
+      <li><b>Fica só neste navegador.</b> Se você limpar os dados do navegador, trocar de aparelho ou usar aba anônima, as fichas não vão junto. Por isso faça <b>backup</b>.</li>
+      <li><b>Backup:</b> no menu <b>☰ Fichas</b>, <b>⬇ Baixar todas</b> gera um arquivo <code>.json</code> com todas as suas fichas (foto, Custom Race, habilidades, itens, perícias e anotações). O <b>⬇</b> de cada ficha baixa só ela.</li>
+      <li><b>Recuperar:</b> abra o site no aparelho novo, vá em <b>⬆ Carregar arquivo</b> e escolha o arquivo. Se a ficha já existir, você escolhe entre <b>substituir</b> ou <b>criar cópia</b>.</li>
+      <li>O arquivo é um texto: o mestre pode abrir, ajustar valores e devolver ao jogador. Valores inválidos são corrigidos ao carregar.</li>
+      <li>Guarde o arquivo em um lugar seguro, como o próprio Discord, o Drive ou o e-mail.</li>
+    </ul>
+  </section>
+
+  <div class="g-end"><a class="g-back" href="index.html">← Voltar para as fichas</a> <a class="g-top-link" href="#comecar">↑ Voltar ao topo</a></div>
+</main>
+<script type="module" src="js/guia.js"></script>
+</body>
+</html>

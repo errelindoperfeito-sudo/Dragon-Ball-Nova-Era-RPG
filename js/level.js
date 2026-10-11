@@ -2,7 +2,6 @@
 import { state, commit } from './state.js';
 import { clamp, LEVEL_MAX } from './utils.js';
 import { getTransforms } from './transformations.js';
-import { TECHS } from './techniques.js';
 
 export const MIN = 1, MAX = LEVEL_MAX;
 export const need = l => 100 + (l - 1) * 10; // XP necessário no nível l (ajuste aqui a curva)
@@ -19,9 +18,8 @@ export function addXp(delta) {
   if (l > old) document.dispatchEvent(new CustomEvent('levelup'));
 }
 
-// Desativa formas/técnicas que o nível atual não permite mais.
+// Desativa a forma que o nível atual não permite mais.
 export function syncUnlocks() {
   const f = getTransforms(state.race, state.mutant, state.custom).find(t => t.id === state.form);
   if (!f || f.lvl > state.level) state.form = null;
-  state.techs = state.techs.filter(id => { const t = TECHS.find(x => x.id === id); return t && t.lvl <= state.level; });
 }

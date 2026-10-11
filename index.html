@@ -36,6 +36,7 @@
 <link rel="stylesheet" href="css/items.css">
 <link rel="stylesheet" href="css/effects.css">
 <link rel="stylesheet" href="css/notes.css">
+<link rel="stylesheet" href="css/calc.css">
 <link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
@@ -88,13 +89,13 @@
     <button data-tab="habilidades">Habilidades</button>
     <button data-tab="pericias">Perícias</button>
     <button data-tab="itens">Itens</button>
+    <button data-tab="calc">Calculadora</button>
     <button data-tab="notas">Anotações</button>
   </nav>
 
   <section class="tab" id="tab-ficha">
     <div class="actions">
       <button id="btnForms">Transformações</button>
-      <button id="btnTechs">Técnicas</button>
       <button id="btnMutant" hidden>Saiyajin Mutante</button>
       <button id="btnCustom" hidden>🛠 Editar Custom Race</button>
       <button id="btnReset" class="danger">Resetar ficha</button>
@@ -104,7 +105,6 @@
       <div id="racePassive" class="passive"></div>
     </div>
     <div id="formsPanel" class="panel" hidden></div>
-    <div id="techsPanel" class="panel" hidden></div>
     <div id="attrGrid" class="attr-grid"></div>
   </section>
 
@@ -133,6 +133,10 @@
     <div id="itemsList" class="groups"></div>
   </section>
 
+  <section class="tab" id="tab-calc" hidden>
+    <div id="calcRoot"></div>
+  </section>
+
   <section class="tab" id="tab-notas" hidden>
     <div class="toolbar"><h2>Anotações</h2><small id="notesStatus">Salvo automaticamente</small></div>
     <textarea id="notesArea" class="notes" placeholder="História, objetivos, NPCs, anotações de sessão..."></textarea>
@@ -143,6 +147,7 @@
 <aside id="sidebar" class="sidebar" aria-label="Fichas criadas" aria-hidden="true">
   <div class="sidebar-head"><div><h2>Minhas fichas</h2><small id="sheetsCount"></small></div><button class="mini" id="sidebarClose" aria-label="Fechar menu">✕</button></div>
   <button id="newSheet">+ Nova ficha</button>
+  <a id="guideLink" class="guide-link" href="guia.html">📖 Guia do Sistema</a>
   <div class="backup-row"><button id="exportAll" class="mini" title="Baixa todas as fichas deste navegador em um arquivo JSON">⬇ Baixar todas</button><button id="importBtn" class="mini" title="Carrega fichas de um arquivo JSON">⬆ Carregar arquivo</button></div>
   <small class="backup-hint">Guarde o arquivo como backup. Em outro aparelho, use "Carregar arquivo" para recuperar tudo.</small>
   <input id="importFile" type="file" accept=".json,application/json" hidden>

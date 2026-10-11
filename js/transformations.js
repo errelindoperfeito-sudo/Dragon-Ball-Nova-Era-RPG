@@ -38,7 +38,7 @@ const NAMEK = [
 
 // Absorção não é uma forma: ao ativar, abre o card para informar os atributos recebidos (ver ui.js).
 const MAJIN = [{...T('absorcao', 'Absorção', 25, {}), action:'absorb',
-  desc:'Absorve permanentemente um inimigo derrotado: recebe 20% dos atributos do alvo, suas técnicas e seu conhecimento.'}];
+  desc:'Absorve permanentemente um inimigo derrotado: recebe 20% dos atributos do alvo, suas habilidades e seu conhecimento.'}];
 
 const CATALOG = {saiyajin: SAIYAJIN, arcosian: ARCOSIAN, namekuseijin: NAMEK, majin: MAJIN};
 export const getTransforms = (race, mutant, custom) => race === 'custom' ? customForms(custom)
