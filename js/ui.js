@@ -58,11 +58,13 @@ export function render() {
     if (L.absorb) rows.push(['a', 'Absorção', sgn(L.absorb)]);
     if (L.form) rows.push(['f', form.name, sgn(L.form)]);
     if (L.tech) rows.push(['t', 'Técnicas', sgn(L.tech)]);
+    if (L.abil) rows.push(['b', 'Habilidades', sgn(L.abil)]);
+    if (L.item) rows.push(['i', 'Itens', sgn(L.item)]);
     rows.push(['sum', 'Total de pontos', fmt(t)]);
     $('.layers', card).innerHTML = rows.map(([c, l, v]) => `<li class="${c}"><span>${l}</span><b>${v}</b></li>`).join('');
     $('.result', card).innerHTML = `[ ${fmt(t)} ] → <b>${isPool ? fmt(a === 'hpMax' ? S.hpTotal : S.kiTotal) : fmt(t * 0.7)}</b>${isPool ? (a === 'hpMax' ? ' HP' : ' Ki') : ''}`;
     $('.reads', card).innerHTML = reads(a, S).map(([l, v]) => `<div><span>${l}</span><b>${v}</b></div>`).join('');
-    card.classList.toggle('boosted', !!(L.form || L.tech));
+    card.classList.toggle('boosted', !!(L.form || L.tech || L.abil || L.item));
   });
 
   // Pontos disponíveis = pontos ganhos por nível − pontos já investidos (nunca negativo). Mostra de quais níveis são.

@@ -2,6 +2,7 @@
 // `state` é SEMPRE a ficha ativa (o objeto é o mesmo; ao trocar de ficha o conteúdo é substituído).
 import { ATTRS, newId, clamp, LEVEL_MAX } from './utils.js';
 import { RACES, CUSTOM_ID, defaultCustom, sanitizeCustom } from './races.js';
+import { sanitizeEntry } from './effects.js';
 import { loadStore, saveStore } from './storage.js';
 
 export const defaults = () => ({name:'', race:'humano', mutant:false, level:1, xp:0,
@@ -19,6 +20,7 @@ export function normalize(saved = {}) {
   s.level = clamp(Math.floor(Number(s.level) || 1), 1, LEVEL_MAX); s.xp = Math.max(0, Number(s.xp) || 0); s.mutant = !!s.mutant;
   ['hp', 'ki'].forEach(k => { s[k] = s[k] === null || s[k] === undefined || !Number.isFinite(Number(s[k])) ? null : Math.max(0, Number(s[k])); });
   ['techs', 'abilities', 'items'].forEach(k => { if (!Array.isArray(s[k])) s[k] = []; });
+  s.abilities = s.abilities.slice(0, 300).map(e => sanitizeEntry(e, 'abilities')); s.items = s.items.slice(0, 300).map(e => sanitizeEntry(e, 'items'));
   if (typeof s.avatar !== 'string' || !s.avatar.startsWith('data:image/') || s.avatar.length > 700000) s.avatar = null;
   if (!['ficha', 'habilidades', 'pericias', 'itens', 'notas'].includes(s.tab)) s.tab = 'ficha';
   return s;

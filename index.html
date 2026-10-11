@@ -34,6 +34,7 @@
 <link rel="stylesheet" href="css/abilities.css">
 <link rel="stylesheet" href="css/skills.css">
 <link rel="stylesheet" href="css/items.css">
+<link rel="stylesheet" href="css/effects.css">
 <link rel="stylesheet" href="css/notes.css">
 <link rel="stylesheet" href="css/sidebar.css">
 <link rel="stylesheet" href="css/responsive.css">
@@ -108,9 +109,11 @@
   </section>
 
   <section class="tab" id="tab-habilidades" hidden>
-    <div class="toolbar"><h2>Habilidades</h2><button id="addAbility">+ Nova habilidade</button></div>
+    <div class="toolbar"><h2>Habilidades</h2><div class="tb-actions"><button class="mini" id="exportAbilities" title="Baixa todas as habilidades em um arquivo JSON">⬇ Baixar todas</button><button class="mini" id="importAbilities" title="Importa habilidades de um arquivo JSON">⬆ Importar</button><button id="addAbility">+ Nova habilidade</button></div></div>
+    <p class="hint">Passivas e ativáveis ligadas somam nos atributos automaticamente. Ativáveis têm botão <b>Ativar</b>, que já desconta o custo de Ki/HP. Dá para baixar uma habilidade (ou todas) e enviar o arquivo para outro jogador importar.</p>
+    <input id="fileAbilities" type="file" accept=".json,application/json" hidden>
     <p id="abilitiesEmpty" class="empty">Nenhuma habilidade registrada ainda.</p>
-    <div id="abilitiesList" class="list"></div>
+    <div id="abilitiesList" class="groups"></div>
   </section>
 
   <section class="tab" id="tab-pericias" hidden>
@@ -123,9 +126,11 @@
   </section>
 
   <section class="tab" id="tab-itens" hidden>
-    <div class="toolbar"><h2>Itens</h2><button id="addItem">+ Novo item</button></div>
+    <div class="toolbar"><h2>Itens</h2><div class="tb-actions"><button class="mini" id="exportItems" title="Baixa todos os itens em um arquivo JSON">⬇ Baixar todos</button><button class="mini" id="importItems" title="Importa itens de um arquivo JSON">⬆ Importar</button><button id="addItem">+ Novo item</button></div></div>
+    <p class="hint">Itens passivos (ativos/equipados) e usáveis ligados somam nos atributos. Itens usáveis têm botão <b>Usar</b>, que consome 1 unidade e aplica custo/recuperação.</p>
+    <input id="fileItems" type="file" accept=".json,application/json" hidden>
     <p id="itemsEmpty" class="empty">Inventário vazio.</p>
-    <div id="itemsList" class="list"></div>
+    <div id="itemsList" class="groups"></div>
   </section>
 
   <section class="tab" id="tab-notas" hidden>

@@ -1,0 +1,16 @@
+/* Habilidades e Itens: grupos, passivas/ativáveis, efeitos */
+.groups{display:flex;flex-direction:column;gap:14px}
+.grp{margin-top:6px;color:var(--yellow)}
+.tb-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.hint{color:var(--mut);font-size:.9em;margin:8px 0}
+.entry.on{border-left-color:var(--yellow);box-shadow:0 0 14px #ffc21a55}
+.entry.m-passive{border-left-color:#5cc8ff}.entry.m-active{border-left-color:var(--orange)}
+.fx-line{color:var(--green);font-weight:700;font-size:.92em}
+.fx-msg{font-size:.9em;color:var(--green)}.fx-msg.bad{color:var(--red);font-weight:700}
+.fx-btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.switch{font-weight:700}
+details.fx{border:1px dashed var(--line);border-radius:10px;padding:8px}
+details.fx summary{cursor:pointer;font-weight:700}
+.fx-editor{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.fx-editor h4{font-size:.95em;color:var(--yellow)}
+.entry .cust-ki{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}

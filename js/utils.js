@@ -55,7 +55,7 @@ const names = as => as.length === 7 ? 'todos os atributos'
   : as.map(a => LABEL[a]).join(', ');
 export function describe(fx) {
   const out = [];
-  for (const [key, f] of [['add', v => '+' + v], ['mult', v => '×' + v]]) {
+  for (const [key, f] of [['add', v => (Number(v) > 0 ? '+' : '') + v], ['mult', v => '×' + v]]) {
     const g = {};
     for (const [a, v] of Object.entries(fx[key] || {})) if (v) (g[v] ??= []).push(a);
     for (const [v, as] of Object.entries(g)) out.push(`${f(v)} ${names(as)}`);

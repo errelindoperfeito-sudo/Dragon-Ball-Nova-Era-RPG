@@ -4,6 +4,7 @@ import { ATTRS, BASE_BAR, fmt } from './utils.js';
 import { getRace } from './races.js';
 import { getTransforms } from './transformations.js';
 import { TECHS } from './techniques.js';
+import { fxTotals } from './effects.js';
 
 export const activeForm = () => getTransforms(state.race, state.mutant, state.custom).find(t => t.id === state.form) || null;
 export const activeTechs = () => TECHS.filter(t => state.techs.includes(t.id));
@@ -18,7 +19,11 @@ export function layers(a) {
   const tAdd = ts.reduce((s, t) => s + (t.add[a] || 0), 0);
   const tMul = ts.reduce((m, t) => m * (t.mult[a] || 1), 1);
   const s3 = (s2 + tAdd) * tMul;
-  return {base, race, absorb, form:s2 - s1, tech:s3 - s2, total:s3};
+  // Habilidades (passivas/ativas ligadas) e depois itens: pontos somam, multiplicadores multiplicam. Debuffs nunca levam o total abaixo de 0.
+  const ab = fxTotals(state.abilities), it = fxTotals(state.items);
+  const s4 = (s3 + (ab.add[a] || 0)) * (ab.mult[a] || 1);
+  const s5 = (s4 + (it.add[a] || 0)) * (it.mult[a] || 1);
+  return {base, race, absorb, form:s2 - s1, tech:s3 - s2, abil:s4 - s3, item:s5 - s4, total:Math.max(0, s5)};
 }
 
 export function stats() {
